@@ -169,6 +169,8 @@ Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.m
 - **No:** corregir los `.jsx` de referencia. Alteraría la plantilla original.
 - **Sí:** ocultar el botón "Iniciar Sesión" del Nav por debajo de 840 px (`app/globals.css`). En la plantilla, el logo, ese botón y la hamburguesa desbordaban 375 px y causaban scroll horizontal; el panel móvil ya enlaza a `/login`. Decidido tras la verificación en navegador.
 - **Sí:** por debajo de 720 px, columnas más estrechas en la tabla del Salón (`36px minmax(0, 1fr) 88px 72px`) y estadísticas del Detalle a 12 px. En la plantilla también desbordaban 375 px. Estas tres correcciones son las únicas desviaciones visuales respecto a la plantilla, y solo afectan a móvil.
+- **Sí:** `--pixel` y `--mono` usan los nombres literales de las fuentes (`"JetBrains Mono", "Courier Prime", "Courier New", monospace`), igual que la plantilla. Con `var(--font-*)` se colaban las fuentes "… Fallback" de `next/font` (Arial con métricas ajustadas), que dibujaban el ▲ de la portada de ROCAS en Arial y no en Courier New. Verificado con Playwright: a 1440 px la home es idéntica píxel a píxel a la plantilla.
+- **No:** `adjustFontFallback: false` en `next/font`. Está documentado, pero Next 16.3.8 con Turbopack lo ignora y sigue emitiendo las fuentes de respaldo.
 - **Sí:** se ignora la ruta `references/templates/` mencionada en la petición; la ruta real es `reference/resources/templates/`.
 
 ## Riesgos

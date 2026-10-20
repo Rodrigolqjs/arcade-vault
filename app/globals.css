@@ -8,7 +8,7 @@
  * still override them.
  *
  * Fonts (Press Start 2P, JetBrains Mono, Courier Prime) are self-hosted via
- * next/font in app/layout.tsx, which exposes them as --font-* variables.
+ * next/font in app/layout.tsx and referenced below by their literal family names.
  */
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
@@ -52,8 +52,11 @@
     --bronze: #d97a3a;
     --line: rgba(0, 245, 255, 0.18);
     --line-2: rgba(255, 255, 255, 0.06);
-    --pixel: var(--font-press-start-2p), "Press Start 2P", system-ui, monospace;
-    --mono: var(--font-jetbrains-mono), "JetBrains Mono", var(--font-courier-prime), "Courier Prime", "Courier New", monospace;
+    /* Literal family names, same chain as the reference. The var(--font-*) values would add
+       next/font's metric-adjusted "… Fallback" faces (local Arial), which then draw glyphs
+       outside the latin subset (▲ in the ROCAS cover) in Arial instead of Courier New. */
+    --pixel: "Press Start 2P", system-ui, monospace;
+    --mono: "JetBrains Mono", "Courier Prime", "Courier New", monospace;
   }
 
   * { box-sizing: border-box; }
