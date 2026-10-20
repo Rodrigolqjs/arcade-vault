@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Design reference prototype (browser-Babel globals), not app code.
+    "reference/**",
   ]),
 ]);
 

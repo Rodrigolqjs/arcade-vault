@@ -164,6 +164,8 @@ Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.m
 - **Sí:** `generateStaticParams` en `/juegos/[id]` y `/juegos/[id]/jugar`. Los 8 juegos son fijos, así que las páginas se prerenderizan.
 - **Sí:** semilla de los leaderboards basada en la posición del juego en `GAMES`. Decidido durante la implementación del paso 9.
 - **No:** la semilla de la plantilla (`id.length * …`). "caida" y "rocas" tienen 5 letras y generaban tablas idénticas, lo que incumplía el criterio de que cambiar de pestaña cambie la tabla.
+- **Sí:** añadir `reference/**` a `globalIgnores` en `eslint.config.mjs`. El prototipo usa globales de Babel en el navegador y hacía fallar `npm run lint`; es material de consulta, no código de la app. Decidido durante la implementación del paso 10.
+- **No:** corregir los `.jsx` de referencia. Alteraría la plantilla original.
 - **Sí:** se ignora la ruta `references/templates/` mencionada en la petición; la ruta real es `reference/resources/templates/`.
 
 ## Riesgos
