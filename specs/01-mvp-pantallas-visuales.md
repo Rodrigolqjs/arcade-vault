@@ -78,7 +78,7 @@ export function seededScores(seed: number, count?: number): ScoreRow[];
 Convenciones:
 
 - `seededScores` es determinista (mismo `seed`, mismo resultado), así que puede ejecutarse en servidor sin desajustes de hidratación.
-- Semillas iguales a la plantilla: Detalle usa `id.length * 17 + 3` con 10 filas; Salón usa `id.length * 23 + 7` con 12 filas.
+- Semillas basadas en la posición del juego en `GAMES` (`index`, empezando en 0): Detalle usa `(index + 1) * 17 + 3` con 10 filas; Salón usa `(index + 1) * 23 + 7` con 12 filas.
 - Los números se formatean con `toLocaleString("es-ES")`.
 
 ## Estructura de archivos
@@ -162,6 +162,8 @@ Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.m
 - **Sí:** `notFound()` y `app/not-found.tsx` temático para juegos inexistentes.
 - **Sí:** Server Components por defecto; `"use client"` solo en Nav, Library, GameCard, GamePlayer, GameOverModal, AuthForm y HallOfFame.
 - **Sí:** `generateStaticParams` en `/juegos/[id]` y `/juegos/[id]/jugar`. Los 8 juegos son fijos, así que las páginas se prerenderizan.
+- **Sí:** semilla de los leaderboards basada en la posición del juego en `GAMES`. Decidido durante la implementación del paso 9.
+- **No:** la semilla de la plantilla (`id.length * …`). "caida" y "rocas" tienen 5 letras y generaban tablas idénticas, lo que incumplía el criterio de que cambiar de pestaña cambie la tabla.
 - **Sí:** se ignora la ruta `references/templates/` mencionada en la petición; la ruta real es `reference/resources/templates/`.
 
 ## Riesgos
