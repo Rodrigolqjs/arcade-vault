@@ -38,8 +38,12 @@ The full list is in `node_modules/next/dist/docs/01-app/02-guides/upgrading/vers
 
 ## Workflow: spec-driven development
 
-Features are designed and implemented with the user's `/spec` and `/spec-impl` skills. They follow https://github.com/Klerith/fernando-skills.
+This project uses spec-driven development: every feature is designed and implemented with Fernando Herrera's `/spec` and `/spec-impl` skills (https://github.com/Klerith/fernando-skills), installed in `~/.claude/skills/`. Don't start a feature without a spec. The `specs/` directory is created by the first `/spec` run.
 
 - `/spec <description>` writes a spec to `specs/NN-slug.md` in the `Draft` state. The user changes the state to approved by hand.
 - `/spec-impl NN-slug` only runs on approved specs. It works on a `spec-NN-slug` branch and implements the spec's plan one step at a time. `specs/.spec-config.yml` (`AutoCreateBranch`) controls whether that branch is created automatically.
 - If a spec exists for a feature, implement what it says. Proposed changes belong in the spec, not in code that drifts from it.
+
+
+## Skills
+Usa siempre /frontend-design para diseñar la interfaz de usuario.
