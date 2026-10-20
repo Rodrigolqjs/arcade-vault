@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import GameOverModal from "@/components/GameOverModal";
 import type { Game } from "@/lib/games";
 
 // Simulated run: no real game exists yet, so the score climbs on a timer.
@@ -10,10 +11,18 @@ const START = { score: 0, level: 1 };
 
 export default function GamePlayer({ game }: { game: Game }) {
   const [run, setRun] = useState(START);
-  const [lives] = useState(3);
+  const [lives, setLives] = useState(3);
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
-  const name = "INVITADO";
+  const [name, setName] = useState("INVITADO");
+
+  // Unmounting the modal also resets its "saved" state.
+  const restart = () => {
+    setRun(START);
+    setLives(3);
+    setPaused(false);
+    setOver(false);
+  };
 
   useEffect(() => {
     if (over || paused) return;
@@ -87,6 +96,10 @@ export default function GamePlayer({ game }: { game: Game }) {
           <span>CARGA · 1MB</span>
         </div>
       </div>
+
+      {over && (
+        <GameOverModal score={run.score} name={name} onNameChange={setName} onRestart={restart} />
+      )}
     </div>
   );
 }
