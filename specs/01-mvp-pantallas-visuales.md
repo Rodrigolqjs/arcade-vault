@@ -144,6 +144,7 @@ Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.m
 - [ ] En `/salon`, cambiar de pestaña de juego cambia el podio y la tabla de 12 filas.
 - [ ] El enlace activo del Nav es "Biblioteca" en `/` y `/juegos/*`, y "Salón de la Fama" en `/salon`.
 - [ ] Con un ancho de 375 px, los enlaces del Nav se ocultan, aparece la hamburguesa y abre el panel lateral.
+- [ ] Con un ancho de 375 px, ninguna ruta tiene scroll horizontal.
 - [ ] La consola del navegador no muestra errores ni avisos de hidratación en ninguna ruta.
 
 ## Decisiones
@@ -166,6 +167,8 @@ Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.m
 - **No:** la semilla de la plantilla (`id.length * …`). "caida" y "rocas" tienen 5 letras y generaban tablas idénticas, lo que incumplía el criterio de que cambiar de pestaña cambie la tabla.
 - **Sí:** añadir `reference/**` a `globalIgnores` en `eslint.config.mjs`. El prototipo usa globales de Babel en el navegador y hacía fallar `npm run lint`; es material de consulta, no código de la app. Decidido durante la implementación del paso 10.
 - **No:** corregir los `.jsx` de referencia. Alteraría la plantilla original.
+- **Sí:** ocultar el botón "Iniciar Sesión" del Nav por debajo de 840 px (`app/globals.css`). En la plantilla, el logo, ese botón y la hamburguesa desbordaban 375 px y causaban scroll horizontal; el panel móvil ya enlaza a `/login`. Decidido tras la verificación en navegador.
+- **Sí:** por debajo de 720 px, columnas más estrechas en la tabla del Salón (`36px minmax(0, 1fr) 88px 72px`) y estadísticas del Detalle a 12 px. En la plantilla también desbordaban 375 px. Estas tres correcciones son las únicas desviaciones visuales respecto a la plantilla, y solo afectan a móvil.
 - **Sí:** se ignora la ruta `references/templates/` mencionada en la petición; la ruta real es `reference/resources/templates/`.
 
 ## Riesgos

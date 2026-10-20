@@ -213,6 +213,8 @@
     .av-nav { padding: 12px 16px; }
     .av-nav .links { display: none; }
     .av-nav .coin-counter { display: none; }
+    /* Not in the reference: logo + auth button + hamburger overflowed 375px. The panel already links to /login. */
+    .av-nav .auth-btn { display: none; }
     .av-nav .hamburger { display: inline-flex; }
   }
 
@@ -957,7 +959,12 @@
   }
 
   @media (max-width: 720px) {
-    .hall-table .th, .hall-table .tr { grid-template-columns: 50px 1fr 90px 90px; font-size: 12px; padding: 10px 12px; }
+    /* Narrower than the reference (50px 1fr 90px 90px), which overflowed 375px. */
+    .hall-table .th, .hall-table .tr { grid-template-columns: 36px minmax(0, 1fr) 88px 72px; gap: 6px; font-size: 12px; padding: 10px 12px; }
+    .hall-table .tr .pl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    /* Not in the reference: the three 16px stats (~350px min) overflowed 375px. */
+    .stat-strip > div { padding: 10px; }
+    .stat-strip .v { font-size: 12px; }
     .av-grid { padding: 0 16px; }
     .av-hero { padding: 36px 16px 16px; }
     .av-filters { padding: 0 16px; }
