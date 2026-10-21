@@ -1,6 +1,6 @@
 # SPEC 01 — MVP visual de Arcade Vault
 
-> **Estado:** Aprovada
+> **Estado:** Implementado
 > **Depende de:** ninguna
 > **Fecha:** 2026-10-20
 > **Objetivo:** Portar a Next 16 las cinco pantallas de `reference/resources/templates/` (Biblioteca, Detalle, Reproductor, Auth y Salón de la Fama) como interfaz navegable con datos mock, sin juegos reales.
