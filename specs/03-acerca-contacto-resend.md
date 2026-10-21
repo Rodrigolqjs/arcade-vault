@@ -1,6 +1,6 @@
 # SPEC 03 — Página "Acerca de" con formulario de contacto vía Resend
 
-> **Estado:** Borrador
+> **Estado:** Implementado
 > **Depende de:** SPEC 01, SPEC 02
 > **Fecha:** 2026-10-21
 > **Objetivo:** Portar a `/acerca` la página de `reference/resources/templates/about.jsx` y hacer que su formulario de contacto envíe un correo real al equipo con Resend.
@@ -27,7 +27,7 @@ La descripción original citaba `references/templates/home-about/`, que no exist
 - Estado de error: la misma terminal en modo error (borde y texto magenta, líneas `[ERR]`) y un botón "REINTENTAR" que vuelve al formulario conservando los datos.
 - Honeypot: campo oculto `website`. Si llega relleno, la Server Action responde éxito sin llamar a Resend.
 - Nav: enlace "Acerca de" después de "Salón de la Fama", en la barra y en el panel móvil, activo en `/acerca`.
-- Copiar a `app/globals.css` el bloque `ABOUT PAGE` de `reference/resources/templates/styles.css` (líneas 1071–1144, hasta `.term-body .caret`), más los estilos nuevos del modo error y del honeypot.
+- Copiar a `app/globals.css` el bloque `ABOUT PAGE` de `reference/resources/templates/styles.css` (líneas 1071–1146, hasta `.term-body .caret`), más los estilos nuevos del modo error y del honeypot.
 - Dependencias nuevas: `resend` y `zod`.
 - `.env.example` versionado con `RESEND_API_KEY`, `CONTACT_TO_EMAIL` y `CONTACT_FROM_EMAIL` vacías, y la excepción `!.env.example` en `.gitignore`.
 
@@ -103,7 +103,7 @@ package.json                     # modificado: resend, zod
 
 Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.md`. El objetivo es fidelidad a la plantilla, no un rediseño.
 
-1. Copiar a `app/globals.css` el bloque `ABOUT PAGE` (líneas 1071–1144 de la plantilla). Crear `app/acerca/page.tsx` con el hero y el divisor, `components/about/HighlightIcon.tsx` y montar `Reveal`. Añadir "Acerca de" al Nav (barra y panel móvil, activo en `/acerca`). Verificación: `/acerca` muestra hero y divisor; el Nav marca "Acerca de".
+1. Copiar a `app/globals.css` el bloque `ABOUT PAGE` (líneas 1071–1146 de la plantilla). Crear `app/acerca/page.tsx` con el hero y el divisor, `components/about/HighlightIcon.tsx` y montar `Reveal`. Añadir "Acerca de" al Nav (barra y panel móvil, activo en `/acerca`). Verificación: `/acerca` muestra hero y divisor; el Nav marca "Acerca de".
 2. Crear `components/about/ContactForm.tsx` con la sección de contacto y el formulario controlado (`name`, `email`, `msg`). Implementar el shake por campos vacíos y, de momento, la terminal de éxito simulada como en la plantilla. Verificación: enviar vacío hace shake; enviar relleno muestra la terminal y "ENVIAR OTRO MENSAJE" vacía el formulario.
 3. Instalar `resend` y `zod`. Crear `.env.example` y añadir `!.env.example` a `.gitignore`. Verificación: `git status` muestra `.env.example` como archivo nuevo y `.env.local` sigue ignorado.
 4. Crear `app/acerca/actions.ts` con `sendContactMessage`: comprobar honeypot, validar con Zod, comprobar variables de entorno y enviar con `resend.emails.send`. Los errores se registran con `console.error` sin incluir la API key. Verificación: `npx tsc --noEmit` pasa.
