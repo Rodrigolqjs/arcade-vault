@@ -2,6 +2,7 @@ import Link from "next/link";
 import FeatureIcon, { type FeatureIconKind } from "@/components/home/FeatureIcon";
 import FloatingSilhouettes from "@/components/home/FloatingSilhouettes";
 import MiniCard from "@/components/home/MiniCard";
+import Reveal from "@/components/home/Reveal";
 import { GAMES, type GameColor } from "@/lib/games";
 
 const FEATURES: { i: FeatureIconKind; t: string; d: string; c: GameColor }[] = [
@@ -64,6 +65,7 @@ const FAQ = [
 export default function Home() {
   return (
     <div className="home fade-in">
+      <Reveal />
       {/* HERO */}
       <section className="home-hero">
         <FloatingSilhouettes />
