@@ -1,6 +1,6 @@
 # SPEC 02 — Home (landing page) de Arcade Vault
 
-> **Estado:** Aprovada
+> **Estado:** Implementado
 > **Depende de:** SPEC 01
 > **Fecha:** 2026-10-21
 > **Objetivo:** Portar a Next 16 la landing de `reference/resources/templates/home.jsx` como nueva portada en `/`, moviendo la Biblioteca a `/biblioteca`.
@@ -112,6 +112,8 @@ Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.m
 - **Sí:** "CREAR CUENTA" enlaza a `/login` sin preseleccionar pestaña. Igual que la plantilla y sin tocar `AuthForm` más allá de sus destinos.
 - **Sí:** verificación con Playwright a 1440 px y 375 px contra `arcade-vault-standalone.html`, como en la SPEC 01.
 - **Sí:** esta spec cambia rutas definidas en la SPEC 01. Los criterios de la SPEC 01 que mencionan la Biblioteca en `/` pasan a aplicarse a `/biblioteca`.
+- **Sí:** por debajo de 900 px, `.activity-grid` usa `grid-template-columns: minmax(0, 1fr)` en lugar de `1fr`. En la plantilla, el título sin saltos de línea "▸ ÚLTIMAS PUNTUACIONES" ensanchaba la columna y causaba 11 px de scroll horizontal a 375 px. Es la única desviación visual respecto a la plantilla y solo afecta a móvil. Decidido durante la verificación del paso 7.
+- **Sí:** el bloque `PRICING` se copia hasta la línea 1725 (`.faq-a`), no hasta la 1744. Las líneas 1726–1744 son estilos genéricos (`.fade-in`, tweaks, spinner) que ya estaban en `globals.css`. Decidido durante el paso 3.
 
 ## Riesgos
 
