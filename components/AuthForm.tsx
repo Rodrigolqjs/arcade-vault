@@ -13,7 +13,7 @@ export default function AuthForm() {
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push("/");
+    router.push("/biblioteca");
   };
 
   return (
@@ -67,7 +67,7 @@ export default function AuthForm() {
           </button>
         </form>
 
-        <button type="button" className="btn ghost mt-2.5 w-full" onClick={() => router.push("/")}>
+        <button type="button" className="btn ghost mt-2.5 w-full" onClick={() => router.push("/biblioteca")}>
           JUGAR COMO INVITADO
         </button>
 

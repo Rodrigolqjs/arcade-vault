@@ -39,7 +39,7 @@ export default function GameOverModal({ score, name, onNameChange, onRestart }: 
           <button className="btn" onClick={onRestart}>
             JUGAR DE NUEVO
           </button>
-          <Link href="/" className="btn magenta">
+          <Link href="/biblioteca" className="btn magenta">
             VOLVER AL VAULT
           </Link>
         </div>
