@@ -1,7 +1,5 @@
 "use client";
-
 import { useEffect } from "react";
-
 // Añade .in a cada .reveal de la página cuando entra en pantalla
 export default function Reveal() {
   useEffect(() => {
@@ -19,6 +17,5 @@ export default function Reveal() {
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, []);
-
   return null;
 }

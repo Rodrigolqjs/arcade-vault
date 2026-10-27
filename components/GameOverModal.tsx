@@ -1,15 +1,12 @@
 "use client";
-
 import Link from "next/link";
 import { useState } from "react";
-
 interface GameOverModalProps {
   score: number;
   name: string;
   onNameChange: (name: string) => void;
   onRestart: () => void;
 }
-
 export default function GameOverModal({
   score,
   name,
@@ -18,7 +15,6 @@ export default function GameOverModal({
 }: GameOverModalProps) {
   // Visual-only: saving just flips to the toast. Score persistence belongs to a later spec.
   const [saved, setSaved] = useState(false);
-
   return (
     <div className="modal-bd">
       <div

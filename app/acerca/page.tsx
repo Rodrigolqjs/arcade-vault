@@ -4,7 +4,6 @@ import HighlightIcon, {
 } from "@/components/about/HighlightIcon";
 import Reveal from "@/components/home/Reveal";
 import type { GameColor } from "@/lib/games";
-
 const HIGHLIGHTS: { i: HighlightIconKind; t: string; c: GameColor }[] = [
   { i: "HEART", t: "HECHO CON ❤️ PARA JUGADORES", c: "magenta" },
   {
@@ -14,7 +13,6 @@ const HIGHLIGHTS: { i: HighlightIconKind; t: string; c: GameColor }[] = [
   },
   { i: "PLANT", t: "PROYECTO EN CONSTANTE CRECIMIENTO", c: "green" },
 ];
-
 export default function AcercaPage() {
   return (
     <div className="about fade-in">
@@ -29,7 +27,6 @@ export default function AcercaPage() {
           generación, haciéndolos accesibles para todos, en cualquier lugar y
           sin costo.
         </p>
-
         <div className="highlight-row">
           {HIGHLIGHTS.map((h, i) => (
             <div
@@ -43,7 +40,6 @@ export default function AcercaPage() {
           ))}
         </div>
       </section>
-
       {/* divider banner */}
       <div className="about-divider reveal" aria-hidden="true">
         <div className="div-bar" />
@@ -54,7 +50,6 @@ export default function AcercaPage() {
         </div>
         <div className="div-bar" />
       </div>
-
       {/* CONTACT */}
       <section className="about-contact reveal">
         <div className="contact-grid">
@@ -80,7 +75,6 @@ export default function AcercaPage() {
               </div>
             </div>
           </div>
-
           <ContactForm />
         </div>
       </section>

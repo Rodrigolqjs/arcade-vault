@@ -1,13 +1,11 @@
 // Mock leaderboards, ported from reference/resources/templates/data.jsx.
 // seededScores is deterministic, so it renders identically on server and client.
-
 export interface ScoreRow {
   rank: number;
   name: string;
   score: number;
   date: string;
 }
-
 export const PLAYERS: string[] = [
   "PX_KAI",
   "NEONFOX",
@@ -28,7 +26,6 @@ export const PLAYERS: string[] = [
   "VECTORX",
   "JOY_STK",
 ];
-
 export function seededScores(seed: number, count = 12): ScoreRow[] {
   let s = seed;
   const rand = () => (s = (s * 9301 + 49297) % 233280) / 233280;

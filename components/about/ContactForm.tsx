@@ -1,25 +1,19 @@
 "use client";
-
 import { useState, useTransition, type FormEvent } from "react";
 import { sendContactMessage, type ContactResult } from "@/app/acerca/actions";
-
 const EMPTY_FORM = { name: "", email: "", msg: "", website: "" };
-
 type ContactError = Extract<ContactResult, { ok: false }>["error"];
-
 const ERROR_MESSAGES: Record<ContactError, string> = {
   validation: "DATOS NO VÁLIDOS. REVISA LOS CAMPOS E INTÉNTALO DE NUEVO.",
   config: "NO PUDIMOS ENVIAR TU MENSAJE. INTÉNTALO DE NUEVO EN UNOS MINUTOS.",
   send: "NO PUDIMOS ENVIAR TU MENSAJE. INTÉNTALO DE NUEVO EN UNOS MINUTOS.",
 };
-
 export default function ContactForm() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [sent, setSent] = useState<string | null>(null);
   const [error, setError] = useState<ContactError | null>(null);
   const [shake, setShake] = useState(false);
   const [pending, startTransition] = useTransition();
-
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (pending) return;
@@ -38,12 +32,10 @@ export default function ContactForm() {
       }
     });
   };
-
   const reset = () => {
     setSent(null);
     setForm(EMPTY_FORM);
   };
-
   return (
     <form
       className={"contact-form" + (shake ? " shake" : "")}

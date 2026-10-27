@@ -1,13 +1,10 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-
 export default function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-
   const isHome = pathname === "/";
   const isLibrary =
     pathname === "/biblioteca" || pathname.startsWith("/juegos/");
@@ -15,7 +12,6 @@ export default function Nav() {
   const isAbout = pathname === "/acerca";
   const isAuth = pathname === "/login";
   const close = () => setOpen(false);
-
   return (
     <>
       <nav className="av-nav">
@@ -55,7 +51,6 @@ export default function Nav() {
           ≡
         </button>
       </nav>
-
       <div
         className={"av-mobile-backdrop" + (open ? " open" : "")}
         onClick={close}

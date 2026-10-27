@@ -1,7 +1,5 @@
 import type { ScoreRow } from "@/lib/scores";
-
 const PODIUM = ["top1", "top2", "top3"];
-
 export default function Leaderboard({ rows }: { rows: ScoreRow[] }) {
   return (
     <div className="leaderboard">

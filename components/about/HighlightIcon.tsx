@@ -1,5 +1,4 @@
 export type HighlightIconKind = "HEART" | "BROWSER" | "PLANT";
-
 // Iconos pixel de las tarjetas destacadas; toman el color de la tarjeta vía currentColor
 export default function HighlightIcon({ kind }: { kind: HighlightIconKind }) {
   const C = "currentColor";

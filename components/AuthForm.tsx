@@ -1,8 +1,6 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-
 // Visual-only: no session is created. Real auth belongs to a later spec.
 export default function AuthForm() {
   const router = useRouter();
@@ -10,12 +8,10 @@ export default function AuthForm() {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [email, setEmail] = useState("");
-
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.push("/biblioteca");
   };
-
   return (
     <div className="av-auth-wrap fade-in">
       <div className="auth-card">
@@ -26,7 +22,6 @@ export default function AuthForm() {
             ACCESO AL SISTEMA · v2.6
           </div>
         </div>
-
         <div className="auth-tabs">
           <button
             type="button"
@@ -43,7 +38,6 @@ export default function AuthForm() {
             CREAR CUENTA
           </button>
         </div>
-
         <form onSubmit={submit}>
           <div className="field">
             <label htmlFor="auth-user">Usuario</label>
@@ -76,12 +70,10 @@ export default function AuthForm() {
               placeholder="••••••••"
             />
           </div>
-
           <button className="btn lg mt-2 w-full" type="submit">
             {tab === "in" ? "ENTRAR AL VAULT" : "CREAR Y JUGAR"}
           </button>
         </form>
-
         <button
           type="button"
           className="btn ghost mt-2.5 w-full"
@@ -89,7 +81,6 @@ export default function AuthForm() {
         >
           JUGAR COMO INVITADO
         </button>
-
         <div className="auth-divider">O CONTINÚA CON</div>
         <div className="social">
           <button className="btn ghost" type="button">
@@ -99,7 +90,6 @@ export default function AuthForm() {
             ▣ GITHUB
           </button>
         </div>
-
         <div className="mt-[18px] text-center text-[11px] tracking-[0.1em] text-ink-faint">
           AL ENTRAR ACEPTAS LOS TÉRMINOS DEL SALÓN ARCADE
         </div>

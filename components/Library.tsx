@@ -1,19 +1,15 @@
 "use client";
-
 import { useState } from "react";
 import GameCard from "@/components/GameCard";
 import { CATS, GAMES, type CategoryFilter } from "@/lib/games";
-
 export default function Library() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<CategoryFilter>("TODOS");
-
   const filtered = GAMES.filter(
     (g) =>
       (cat === "TODOS" || g.cat === cat) &&
       g.title.toLowerCase().includes(q.toLowerCase()),
   );
-
   return (
     <div className="fade-in">
       <section className="av-hero">
@@ -22,7 +18,6 @@ export default function Library() {
           INSERTA UNA MONEDA PARA JUGAR <span className="blink">_</span>
         </div>
       </section>
-
       <div className="av-filters">
         <div className="av-search">
           <span className="ico">⌕</span>
@@ -45,7 +40,6 @@ export default function Library() {
           ))}
         </div>
       </div>
-
       <div className="av-grid">
         {filtered.map((g) => (
           <GameCard key={g.id} game={g} />

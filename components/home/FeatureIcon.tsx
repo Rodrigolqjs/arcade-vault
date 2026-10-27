@@ -1,5 +1,4 @@
 export type FeatureIconKind = "GAMEPAD" | "FREE" | "TROPHY" | "ROCKET";
-
 // Iconos pixel dibujados con rects; toman el color de la tarjeta vía currentColor
 export default function FeatureIcon({ kind }: { kind: FeatureIconKind }) {
   const C = "currentColor";

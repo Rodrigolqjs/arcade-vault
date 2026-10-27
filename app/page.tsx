@@ -6,7 +6,6 @@ import FloatingSilhouettes from "@/components/home/FloatingSilhouettes";
 import MiniCard from "@/components/home/MiniCard";
 import Reveal from "@/components/home/Reveal";
 import { GAMES, type GameColor } from "@/lib/games";
-
 const FEATURES: { i: FeatureIconKind; t: string; d: string; c: GameColor }[] = [
   {
     i: "GAMEPAD",
@@ -33,13 +32,11 @@ const FEATURES: { i: FeatureIconKind; t: string; d: string; c: GameColor }[] = [
     c: "green",
   },
 ];
-
 const STATS = [
   { n: "12+", u: "JUEGOS", s: "Y CONTANDO" },
   { n: "MILES", u: "DE PARTIDAS", s: "JUGADAS CADA DÍA" },
   { n: "GLOBAL", u: "RANKING", s: "COMPITE CON EL MUNDO" },
 ];
-
 const RECENT_SCORES: {
   p: string;
   g: string;
@@ -55,7 +52,6 @@ const RECENT_SCORES: {
   { p: "ARKADYA", g: "Serpentina", s: 7820, t: "hace 24 min", c: "green" },
   { p: "CYBER_LU", g: "Ranaria", s: 18900, t: "hace 31 min", c: "yellow" },
 ];
-
 const TOP_PLAYERS = [
   { r: 1, p: "NEONFOX", s: 312840 },
   { r: 2, p: "PX_KAI", s: 248110 },
@@ -63,9 +59,7 @@ const TOP_PLAYERS = [
   { r: 4, p: "VAULT_07", s: 154300 },
   { r: 5, p: "GLITCHA", s: 138900 },
 ];
-
 const PODIUM = ["top1", "top2", "top3"];
-
 const PLAN_PERKS = [
   "Acceso a todos los juegos",
   "Ranking global y salón de la fama",
@@ -74,7 +68,6 @@ const PLAN_PERKS = [
   "Nuevos juegos cada mes",
   "Funciona en cualquier navegador",
 ];
-
 const FAQ = [
   {
     q: "¿REALMENTE ES GRATIS?",
@@ -89,7 +82,6 @@ const FAQ = [
     a: "Es un proyecto comunitario. Si te gusta, compártelo. Esa es toda la moneda que aceptamos.",
   },
 ];
-
 export default function Home() {
   return (
     <div className="home fade-in">
@@ -125,7 +117,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* POR QUÉ */}
       <section className="home-section reveal">
         <div className="section-head">
@@ -147,7 +138,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
       {/* JUEGOS */}
       <section className="home-section reveal">
         <div className="section-head">
@@ -166,7 +156,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
       {/* STATS */}
       <section className="home-stats reveal">
         <div className="stats-inner">
@@ -183,7 +172,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
       {/* ACTIVIDAD */}
       <section className="home-section reveal">
         <div className="section-head">
@@ -211,7 +199,6 @@ export default function Home() {
               ))}
             </div>
           </div>
-
           <div className="activity-card">
             <div className="ac-head">
               <div className="ac-title pixel neon-magenta">
@@ -242,7 +229,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* PRECIOS */}
       <section className="home-section reveal">
         <div className="section-head">
@@ -274,7 +260,6 @@ export default function Home() {
               PLAY
             </div>
           </div>
-
           <div className="pricing-faq">
             {FAQ.map((f) => (
               <div key={f.q} className="faq-item">
@@ -285,7 +270,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* CTA FINAL */}
       <section className="home-final reveal">
         <h2 className="final-title pixel">¿LISTO PARA JUGAR?</h2>
