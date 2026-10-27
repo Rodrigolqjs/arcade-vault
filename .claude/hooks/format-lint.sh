@@ -18,6 +18,11 @@ cd "$project" || exit 0
 npx --no-install prettier --write --ignore-unknown --log-level warn "$file" >/dev/null 2>&1
 
 case "$file" in
+  # Blank lines are dropped in JS/TS by ESLint (no-multiple-empty-lines); CSS has no linter here.
+  *.css) perl -i -ne 'print unless /^\s*$/' "$file" ;;
+esac
+
+case "$file" in
   *.js | *.jsx | *.mjs | *.cjs | *.ts | *.tsx | *.mts | *.cts)
     if ! out=$(npx --no-install eslint --fix --no-warn-ignored "$file" 2>&1); then
       echo "ESLint found problems in $file:" >&2
