@@ -22,14 +22,24 @@ export default function AuthForm() {
         <div className="auth-header">
           <div className="mark" />
           <h2 className="neon-cyan">ARCADE VAULT</h2>
-          <div className="mono mt-1.5 text-[11px] tracking-[0.16em] text-ink-faint">ACCESO AL SISTEMA · v2.6</div>
+          <div className="mono mt-1.5 text-[11px] tracking-[0.16em] text-ink-faint">
+            ACCESO AL SISTEMA · v2.6
+          </div>
         </div>
 
         <div className="auth-tabs">
-          <button type="button" className={tab === "in" ? "on" : ""} onClick={() => setTab("in")}>
+          <button
+            type="button"
+            className={tab === "in" ? "on" : ""}
+            onClick={() => setTab("in")}
+          >
             INICIAR SESIÓN
           </button>
-          <button type="button" className={tab === "up" ? "on" : ""} onClick={() => setTab("up")}>
+          <button
+            type="button"
+            className={tab === "up" ? "on" : ""}
+            onClick={() => setTab("up")}
+          >
             CREAR CUENTA
           </button>
         </div>
@@ -37,7 +47,12 @@ export default function AuthForm() {
         <form onSubmit={submit}>
           <div className="field">
             <label htmlFor="auth-user">Usuario</label>
-            <input id="auth-user" value={user} onChange={(e) => setUser(e.target.value)} placeholder="px_kai" />
+            <input
+              id="auth-user"
+              value={user}
+              onChange={(e) => setUser(e.target.value)}
+              placeholder="px_kai"
+            />
           </div>
           {tab === "up" && (
             <div className="field slide-in">
@@ -67,7 +82,11 @@ export default function AuthForm() {
           </button>
         </form>
 
-        <button type="button" className="btn ghost mt-2.5 w-full" onClick={() => router.push("/biblioteca")}>
+        <button
+          type="button"
+          className="btn ghost mt-2.5 w-full"
+          onClick={() => router.push("/biblioteca")}
+        >
           JUGAR COMO INVITADO
         </button>
 

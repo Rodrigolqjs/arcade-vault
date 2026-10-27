@@ -9,7 +9,9 @@ export default function Library() {
   const [cat, setCat] = useState<CategoryFilter>("TODOS");
 
   const filtered = GAMES.filter(
-    (g) => (cat === "TODOS" || g.cat === cat) && g.title.toLowerCase().includes(q.toLowerCase()),
+    (g) =>
+      (cat === "TODOS" || g.cat === cat) &&
+      g.title.toLowerCase().includes(q.toLowerCase()),
   );
 
   return (
@@ -33,7 +35,11 @@ export default function Library() {
         </div>
         <div className="av-chips">
           {CATS.map((c) => (
-            <button key={c} className={"chip" + (cat === c ? " active" : "")} onClick={() => setCat(c)}>
+            <button
+              key={c}
+              className={"chip" + (cat === c ? " active" : "")}
+              onClick={() => setCat(c)}
+            >
               {c}
             </button>
           ))}
@@ -46,7 +52,9 @@ export default function Library() {
         ))}
         {filtered.length === 0 && (
           <div className="col-span-full p-20 text-center text-ink-faint">
-            <div className="pixel mb-3 text-[14px] text-magenta">NO HAY RESULTADOS</div>
+            <div className="pixel mb-3 text-[14px] text-magenta">
+              NO HAY RESULTADOS
+            </div>
             <div>Intenta otra búsqueda o categoría.</div>
           </div>
         )}

@@ -44,6 +44,6 @@ This project uses spec-driven development: every feature is designed and impleme
 - `/spec-impl NN-slug` only runs on approved specs. It works on a `spec-NN-slug` branch and implements the spec's plan one step at a time. `specs/.spec-config.yml` (`AutoCreateBranch`) controls whether that branch is created automatically.
 - If a spec exists for a feature, implement what it says. Proposed changes belong in the spec, not in code that drifts from it.
 
-
 ## Skills
+
 Usa siempre /frontend-design para diseñar la interfaz de usuario.

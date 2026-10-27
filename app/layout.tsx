@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Courier_Prime, JetBrains_Mono, Press_Start_2P } from "next/font/google";
+import {
+  Courier_Prime,
+  JetBrains_Mono,
+  Press_Start_2P,
+} from "next/font/google";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import "./globals.css";

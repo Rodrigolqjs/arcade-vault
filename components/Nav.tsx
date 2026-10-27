@@ -9,7 +9,8 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
 
   const isHome = pathname === "/";
-  const isLibrary = pathname === "/biblioteca" || pathname.startsWith("/juegos/");
+  const isLibrary =
+    pathname === "/biblioteca" || pathname.startsWith("/juegos/");
   const isHall = pathname === "/salon";
   const isAbout = pathname === "/acerca";
   const isAuth = pathname === "/login";
@@ -46,31 +47,48 @@ export default function Nav() {
         <Link href="/login" className="btn auth-btn">
           Iniciar Sesión
         </Link>
-        <button className="btn ghost hamburger" onClick={() => setOpen(true)} aria-label="Menú">
+        <button
+          className="btn ghost hamburger"
+          onClick={() => setOpen(true)}
+          aria-label="Menú"
+        >
           ≡
         </button>
       </nav>
 
-      <div className={"av-mobile-backdrop" + (open ? " open" : "")} onClick={close} />
+      <div
+        className={"av-mobile-backdrop" + (open ? " open" : "")}
+        onClick={close}
+      />
       <aside className={"av-mobile-panel" + (open ? " open" : "")}>
         <div className="pixel neon-cyan mb-4 text-[11px]">MENÚ</div>
         <Link href="/" className={isHome ? "active" : ""} onClick={close}>
           Inicio
         </Link>
-        <Link href="/biblioteca" className={isLibrary ? "active" : ""} onClick={close}>
+        <Link
+          href="/biblioteca"
+          className={isLibrary ? "active" : ""}
+          onClick={close}
+        >
           Biblioteca
         </Link>
         <Link href="/salon" className={isHall ? "active" : ""} onClick={close}>
           Salón de la Fama
         </Link>
-        <Link href="/acerca" className={isAbout ? "active" : ""} onClick={close}>
+        <Link
+          href="/acerca"
+          className={isAbout ? "active" : ""}
+          onClick={close}
+        >
           Acerca de
         </Link>
         <Link href="/login" className={isAuth ? "active" : ""} onClick={close}>
           Iniciar Sesión
         </Link>
         <div className="flex-1" />
-        <div className="pixel text-[9px] tracking-[0.16em] text-ink-faint">CRÉDITOS · 03</div>
+        <div className="pixel text-[9px] tracking-[0.16em] text-ink-faint">
+          CRÉDITOS · 03
+        </div>
       </aside>
     </>
   );

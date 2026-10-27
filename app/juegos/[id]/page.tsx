@@ -8,7 +8,9 @@ export function generateStaticParams() {
   return GAMES.map((g) => ({ id: g.id }));
 }
 
-export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]">) {
+export default async function GameDetailPage({
+  params,
+}: PageProps<"/juegos/[id]">) {
   const { id } = await params;
   const game = getGame(id);
   if (!game) notFound();
@@ -43,7 +45,9 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
             </div>
             <div>
               <div className="l">Dificultad</div>
-              <div className="v text-yellow [text-shadow:0_0_6px_rgba(245,255,0,0.5)]">★ ★ ★ ☆ ☆</div>
+              <div className="v text-yellow [text-shadow:0_0_6px_rgba(245,255,0,0.5)]">
+                ★ ★ ★ ☆ ☆
+              </div>
             </div>
           </div>
           <div className="detail-actions">

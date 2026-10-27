@@ -106,10 +106,13 @@ export const GAMES: Game[] = [
   },
 ];
 
-export const CATS = ["TODOS", "ARCADE", "PUZZLE", "SHOOTER", "VERSUS"] as const satisfies readonly [
+export const CATS = [
   "TODOS",
-  ...Category[],
-];
+  "ARCADE",
+  "PUZZLE",
+  "SHOOTER",
+  "VERSUS",
+] as const satisfies readonly ["TODOS", ...Category[]];
 
 export type CategoryFilter = (typeof CATS)[number];
 

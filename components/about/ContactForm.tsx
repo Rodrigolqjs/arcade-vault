@@ -45,7 +45,10 @@ export default function ContactForm() {
   };
 
   return (
-    <form className={"contact-form" + (shake ? " shake" : "")} onSubmit={onSubmit}>
+    <form
+      className={"contact-form" + (shake ? " shake" : "")}
+      onSubmit={onSubmit}
+    >
       {sent === null && error === null ? (
         <>
           <div className="field">
@@ -89,7 +92,11 @@ export default function ContactForm() {
               onChange={(e) => setForm({ ...form, website: e.target.value })}
             />
           </div>
-          <button className="btn xl press w-full" type="submit" disabled={pending}>
+          <button
+            className="btn xl press w-full"
+            type="submit"
+            disabled={pending}
+          >
             {pending ? "TRANSMITIENDO…" : "▶  ENVIAR MENSAJE"}
           </button>
         </>
@@ -103,7 +110,8 @@ export default function ContactForm() {
           </div>
           <div className="term-body">
             <div className="line">
-              <span className="prompt">vault@arcade:~$</span> ./send_message --to=team
+              <span className="prompt">vault@arcade:~$</span> ./send_message
+              --to=team
             </div>
             {error ? (
               <>
@@ -114,7 +122,11 @@ export default function ContactForm() {
                   <span className="caret">_</span>
                 </div>
                 <div className="mt-[18px]">
-                  <button className="btn ghost" type="button" onClick={() => setError(null)}>
+                  <button
+                    className="btn ghost"
+                    type="button"
+                    onClick={() => setError(null)}
+                  >
                     REINTENTAR
                   </button>
                 </div>
@@ -125,8 +137,8 @@ export default function ContactForm() {
                 <div className="line dim">[OK] Validando contenido…</div>
                 <div className="line dim">[OK] Transmitiendo paquete…</div>
                 <div className="line success">
-                  &gt; MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, {sent?.toUpperCase()}.
-                  <span className="caret">_</span>
+                  &gt; MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS,{" "}
+                  {sent?.toUpperCase()}.<span className="caret">_</span>
                 </div>
                 <div className="mt-[18px]">
                   <button className="btn ghost" type="button" onClick={reset}>

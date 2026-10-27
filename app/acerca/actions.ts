@@ -28,10 +28,15 @@ const escapeHtml = (s: string) =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
-export async function sendContactMessage(input: ContactInput): Promise<ContactResult> {
+export async function sendContactMessage(
+  input: ContactInput,
+): Promise<ContactResult> {
   // Un bot rellenó el honeypot: fingimos éxito sin enviar nada
   if (typeof input?.website === "string" && input.website !== "") {
-    return { ok: true, name: typeof input.name === "string" ? input.name.trim() : "" };
+    return {
+      ok: true,
+      name: typeof input.name === "string" ? input.name.trim() : "",
+    };
   }
 
   const parsed = ContactSchema.safeParse(input);
@@ -59,11 +64,18 @@ export async function sendContactMessage(input: ContactInput): Promise<ContactRe
         `<p style="white-space:pre-wrap">${escapeHtml(msg)}</p>`,
     });
     if (error) {
-      console.error("[contact] Resend rechazó el envío:", error.name, error.message);
+      console.error(
+        "[contact] Resend rechazó el envío:",
+        error.name,
+        error.message,
+      );
       return { ok: false, error: "send" };
     }
   } catch (err) {
-    console.error("[contact] Error al llamar a Resend:", err instanceof Error ? err.message : err);
+    console.error(
+      "[contact] Error al llamar a Resend:",
+      err instanceof Error ? err.message : err,
+    );
     return { ok: false, error: "send" };
   }
 

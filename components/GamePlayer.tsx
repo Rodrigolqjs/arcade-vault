@@ -98,7 +98,12 @@ export default function GamePlayer({ game }: { game: Game }) {
       </div>
 
       {over && (
-        <GameOverModal score={run.score} name={name} onNameChange={setName} onRestart={restart} />
+        <GameOverModal
+          score={run.score}
+          name={name}
+          onNameChange={setName}
+          onRestart={restart}
+        />
       )}
     </div>
   );

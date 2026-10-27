@@ -18,12 +18,18 @@ export default function HallOfFame() {
     <div className="av-hall fade-in">
       <div className="hall-head">
         <h1>SALÓN DE LA FAMA</h1>
-        <p className="pixel text-[10px]">LOS NOMBRES QUE NUNCA SE BORRAN DE LA PANTALLA</p>
+        <p className="pixel text-[10px]">
+          LOS NOMBRES QUE NUNCA SE BORRAN DE LA PANTALLA
+        </p>
       </div>
 
       <div className="hall-tabs">
         {GAMES.map((g) => (
-          <button key={g.id} className={"chip" + (tab === g.id ? " active" : "")} onClick={() => setTab(g.id)}>
+          <button
+            key={g.id}
+            className={"chip" + (tab === g.id ? " active" : "")}
+            onClick={() => setTab(g.id)}
+          >
             {g.title}
           </button>
         ))}
@@ -37,7 +43,9 @@ export default function HallOfFame() {
           <div className="date">{second.date}</div>
         </div>
         <div className="podium-slot gold">
-          <div className="pixel text-[9px] tracking-[0.18em] text-gold">CAMPEÓN</div>
+          <div className="pixel text-[9px] tracking-[0.18em] text-gold">
+            CAMPEÓN
+          </div>
           <div className="rank-num mt-1 text-[36px]">01</div>
           <div className="name">{first.name}</div>
           <div className="score text-[20px]">{fmt(first.score)}</div>
