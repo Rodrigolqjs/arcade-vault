@@ -17,15 +17,26 @@ npm run start          # serve the production build
 npm run lint           # ESLint flat config (`next lint` no longer exists in Next 16)
 npx eslint app/page.tsx  # lint a single file
 npx tsc --noEmit       # type-check
+
+# Supabase (CLI is a devDependency; the repo is linked to the remote project)
+npx supabase migration new <nombre>   # create supabase/migrations/<timestamp>_<nombre>.sql
+npx supabase db push --linked         # apply pending migrations to the remote project
+npx supabase migration list --linked  # compare local vs remote migrations
 ```
 
-No test framework is set up yet.
+No test framework is set up yet. `npx supabase login` and `npx supabase link --project-ref ptazjmejroiokyfumpav` need the user's token and DB password, so the user runs them (`! <command>`). There is no local Docker stack: development runs against the remote project, the only environment, so review migration SQL before pushing.
 
 ## Stack and layout
 
 - Next.js 16 (App Router) with React 19.2 and strict TypeScript. Routes live in `app/` at the repo root; there is no `src/`. The `@/*` path alias resolves to the repo root.
 - Tailwind CSS v4 is wired through PostCSS (`@tailwindcss/postcss`). There is no `tailwind.config` file: the theme is defined in `app/globals.css` using `@import "tailwindcss"` and an `@theme inline` block that maps CSS variables (`--background`, `--foreground`, and the Geist font variables set in `app/layout.tsx`) to Tailwind tokens.
 - Next 16 generates global route-type helpers such as `LayoutProps<"/">` and `PageProps<"/route">`; `app/layout.tsx` uses them. They are produced in `.next/types` by `next dev` or `next build`, so type errors about them usually mean the types haven't been generated yet.
+- Supabase (`@supabase/supabase-js` + `@supabase/ssr`), configured by `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` (see `.env.example`).
+  - `lib/supabase/server.ts`: async `createClient()` for Server Components, Server Actions and Route Handlers (`await cookies()`, `getAll`/`setAll`). Create one per request.
+  - `lib/supabase/client.ts`: `createClient()` for Client Components.
+  - `supabase/`: CLI project (`config.toml`, `migrations/`). `supabase/.temp/` holds the local link and is git-ignored. The schema only changes through migrations in `supabase/migrations/`, never directly in the dashboard or via the MCP.
+  - `GET /api/health` (`app/api/health/route.ts`) calls `rpc("health")` and returns `200 {ok:true}` or `503 {ok:false}`; error details are only logged server-side.
+  - There is no `proxy.ts` yet; session refresh arrives with the auth spec.
 
 ### Next 16 changes that are easy to get wrong
 
