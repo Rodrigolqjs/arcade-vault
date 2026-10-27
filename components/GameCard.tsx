@@ -1,19 +1,15 @@
 "use client";
-
 import Link from "next/link";
 import { useRef, type MouseEvent } from "react";
 import type { Game } from "@/lib/games";
-
 const BUTTON_COLOR: Record<Game["color"], string> = {
   cyan: "",
   green: "",
   magenta: " magenta",
   yellow: " yellow",
 };
-
 export default function GameCard({ game }: { game: Game }) {
   const tiltRef = useRef<HTMLAnchorElement>(null);
-
   const onMove = (e: MouseEvent<HTMLAnchorElement>) => {
     const el = tiltRef.current;
     if (!el) return;
@@ -22,11 +18,9 @@ export default function GameCard({ game }: { game: Game }) {
     const py = (e.clientY - r.top) / r.height - 0.5;
     el.style.transform = `translateY(-6px) rotateX(${-py * 6}deg) rotateY(${px * 8}deg)`;
   };
-
   const onLeave = () => {
     if (tiltRef.current) tiltRef.current.style.transform = "";
   };
-
   return (
     <Link
       ref={tiltRef}

@@ -1,24 +1,49 @@
 import Link from "next/link";
-import FeatureIcon, { type FeatureIconKind } from "@/components/home/FeatureIcon";
+import FeatureIcon, {
+  type FeatureIconKind,
+} from "@/components/home/FeatureIcon";
 import FloatingSilhouettes from "@/components/home/FloatingSilhouettes";
 import MiniCard from "@/components/home/MiniCard";
 import Reveal from "@/components/home/Reveal";
 import { GAMES, type GameColor } from "@/lib/games";
-
 const FEATURES: { i: FeatureIconKind; t: string; d: string; c: GameColor }[] = [
-  { i: "GAMEPAD", t: "JUEGOS CLÁSICOS", d: "Arkanoid, Tetris, Snake y muchos más. Los mejores arcades de todos los tiempos en un solo lugar.", c: "cyan" },
-  { i: "FREE", t: "100% GRATIS", d: "Sin suscripciones, sin pagos ocultos. Todos los juegos disponibles de forma gratuita.", c: "yellow" },
-  { i: "TROPHY", t: "LADDER BOARDS", d: "Compite con jugadores de todo el mundo. Escala el ranking y demuestra quién es el mejor.", c: "magenta" },
-  { i: "ROCKET", t: "SIEMPRE CRECIENDO", d: "Agregamos nuevos juegos constantemente. Vuelve seguido, siempre habrá algo nuevo que jugar.", c: "green" },
+  {
+    i: "GAMEPAD",
+    t: "JUEGOS CLÁSICOS",
+    d: "Arkanoid, Tetris, Snake y muchos más. Los mejores arcades de todos los tiempos en un solo lugar.",
+    c: "cyan",
+  },
+  {
+    i: "FREE",
+    t: "100% GRATIS",
+    d: "Sin suscripciones, sin pagos ocultos. Todos los juegos disponibles de forma gratuita.",
+    c: "yellow",
+  },
+  {
+    i: "TROPHY",
+    t: "LADDER BOARDS",
+    d: "Compite con jugadores de todo el mundo. Escala el ranking y demuestra quién es el mejor.",
+    c: "magenta",
+  },
+  {
+    i: "ROCKET",
+    t: "SIEMPRE CRECIENDO",
+    d: "Agregamos nuevos juegos constantemente. Vuelve seguido, siempre habrá algo nuevo que jugar.",
+    c: "green",
+  },
 ];
-
 const STATS = [
   { n: "12+", u: "JUEGOS", s: "Y CONTANDO" },
   { n: "MILES", u: "DE PARTIDAS", s: "JUGADAS CADA DÍA" },
   { n: "GLOBAL", u: "RANKING", s: "COMPITE CON EL MUNDO" },
 ];
-
-const RECENT_SCORES: { p: string; g: string; s: number; t: string; c: GameColor }[] = [
+const RECENT_SCORES: {
+  p: string;
+  g: string;
+  s: number;
+  t: string;
+  c: GameColor;
+}[] = [
   { p: "NEONFOX", g: "Caída", s: 184220, t: "hace 2 min", c: "magenta" },
   { p: "PX_KAI", g: "Glotón", s: 96400, t: "hace 5 min", c: "yellow" },
   { p: "Z3R0COOL", g: "Invasores", s: 54190, t: "hace 8 min", c: "green" },
@@ -27,7 +52,6 @@ const RECENT_SCORES: { p: string; g: string; s: number; t: string; c: GameColor 
   { p: "ARKADYA", g: "Serpentina", s: 7820, t: "hace 24 min", c: "green" },
   { p: "CYBER_LU", g: "Ranaria", s: 18900, t: "hace 31 min", c: "yellow" },
 ];
-
 const TOP_PLAYERS = [
   { r: 1, p: "NEONFOX", s: 312840 },
   { r: 2, p: "PX_KAI", s: 248110 },
@@ -35,9 +59,7 @@ const TOP_PLAYERS = [
   { r: 4, p: "VAULT_07", s: 154300 },
   { r: 5, p: "GLITCHA", s: 138900 },
 ];
-
 const PODIUM = ["top1", "top2", "top3"];
-
 const PLAN_PERKS = [
   "Acceso a todos los juegos",
   "Ranking global y salón de la fama",
@@ -46,7 +68,6 @@ const PLAN_PERKS = [
   "Nuevos juegos cada mes",
   "Funciona en cualquier navegador",
 ];
-
 const FAQ = [
   {
     q: "¿REALMENTE ES GRATIS?",
@@ -61,7 +82,6 @@ const FAQ = [
     a: "Es un proyecto comunitario. Si te gusta, compártelo. Esa es toda la moneda que aceptamos.",
   },
 ];
-
 export default function Home() {
   return (
     <div className="home fade-in">
@@ -97,7 +117,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* POR QUÉ */}
       <section className="home-section reveal">
         <div className="section-head">
@@ -107,7 +126,11 @@ export default function Home() {
         </div>
         <div className="feature-grid">
           {FEATURES.map((f, i) => (
-            <div key={f.i} className={"feature-card " + f.c} style={{ transitionDelay: i * 80 + "ms" }}>
+            <div
+              key={f.i}
+              className={"feature-card " + f.c}
+              style={{ transitionDelay: i * 80 + "ms" }}
+            >
               <FeatureIcon kind={f.i} />
               <div className="ft-title pixel">{f.t}</div>
               <div className="ft-desc">{f.d}</div>
@@ -115,7 +138,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
       {/* JUEGOS */}
       <section className="home-section reveal">
         <div className="section-head">
@@ -134,12 +156,15 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
       {/* STATS */}
       <section className="home-stats reveal">
         <div className="stats-inner">
           {STATS.map((st, i) => (
-            <div key={st.n} className="stat-block" style={{ transitionDelay: i * 90 + "ms" }}>
+            <div
+              key={st.n}
+              className="stat-block"
+              style={{ transitionDelay: i * 90 + "ms" }}
+            >
               <div className="stat-n neon-yellow">{st.n}</div>
               <div className="stat-u pixel">{st.u}</div>
               <div className="stat-s">{st.s}</div>
@@ -147,7 +172,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
       {/* ACTIVIDAD */}
       <section className="home-section reveal">
         <div className="section-head">
@@ -162,7 +186,11 @@ export default function Home() {
             </div>
             <div className="ticker">
               {RECENT_SCORES.map((r, i) => (
-                <div key={r.p} className="tick-row" style={{ animationDelay: i * 60 + "ms" }}>
+                <div
+                  key={r.p}
+                  className="tick-row"
+                  style={{ animationDelay: i * 60 + "ms" }}
+                >
                   <span className={"tk-p neon-" + r.c}>{r.p}</span>
                   <span className="tk-mid">▸ {r.g}</span>
                   <span className="tk-s">+{r.s.toLocaleString("es-ES")}</span>
@@ -171,20 +199,27 @@ export default function Home() {
               ))}
             </div>
           </div>
-
           <div className="activity-card">
             <div className="ac-head">
-              <div className="ac-title pixel neon-magenta">▸ TOP JUGADORES · HOY</div>
+              <div className="ac-title pixel neon-magenta">
+                ▸ TOP JUGADORES · HOY
+              </div>
               <Link href="/salon" className="lb-link">
                 VER SALÓN →
               </Link>
             </div>
             <div className="top-list">
               {TOP_PLAYERS.map((r, i) => (
-                <div key={r.p} className={"top-row" + (PODIUM[i] ? " " + PODIUM[i] : "")}>
+                <div
+                  key={r.p}
+                  className={"top-row" + (PODIUM[i] ? " " + PODIUM[i] : "")}
+                >
                   <span className="tp-rk">#{String(r.r).padStart(2, "0")}</span>
                   <span className="tp-bar">
-                    <span className="tp-fill" style={{ width: 100 - i * 16 + "%" }} />
+                    <span
+                      className="tp-fill"
+                      style={{ width: 100 - i * 16 + "%" }}
+                    />
                   </span>
                   <span className="tp-p">{r.p}</span>
                   <span className="tp-s">{r.s.toLocaleString("es-ES")}</span>
@@ -194,7 +229,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* PRECIOS */}
       <section className="home-section reveal">
         <div className="section-head">
@@ -226,7 +260,6 @@ export default function Home() {
               PLAY
             </div>
           </div>
-
           <div className="pricing-faq">
             {FAQ.map((f) => (
               <div key={f.q} className="faq-item">
@@ -237,14 +270,15 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* CTA FINAL */}
       <section className="home-final reveal">
         <h2 className="final-title pixel">¿LISTO PARA JUGAR?</h2>
         <Link href="/biblioteca" className="btn xl pulse final-cta">
           INSERTAR MONEDA →
         </Link>
-        <div className="final-tag">Gratis. Sin registro obligatorio. Empieza en segundos.</div>
+        <div className="final-tag">
+          Gratis. Sin registro obligatorio. Empieza en segundos.
+        </div>
       </section>
     </div>
   );

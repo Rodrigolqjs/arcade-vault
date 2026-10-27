@@ -18,7 +18,7 @@ La descripción original citaba `references/templates/home-about/`, que no exist
 - Nueva ruta `/acerca` con el contenido de `about.jsx`, en este orden:
   - **Hero:** "▸ ACERCA DE", título "ACERCA DE ARCADE VAULT", párrafo de misión y 3 tarjetas destacadas con iconos pixel (HEART magenta, BROWSER cyan, PLANT green) con sus textos literales.
   - **Divisor:** dos barras y 24 píxeles parpadeantes con `animationDelay` de `i * 80` ms.
-  - **Contacto:** "▸ CONTACTO", "CONTÁCTANOS", subtítulo, 3 tips con LED (verde, amarillo, magenta) y el formulario (NOMBRE, CORREO ELECTRÓNICO, MENSAJE, botón "▶  ENVIAR MENSAJE"), con los placeholders de la plantilla.
+  - **Contacto:** "▸ CONTACTO", "CONTÁCTANOS", subtítulo, 3 tips con LED (verde, amarillo, magenta) y el formulario (NOMBRE, CORREO ELECTRÓNICO, MENSAJE, botón "▶ ENVIAR MENSAJE"), con los placeholders de la plantilla.
 - Animación `.reveal` en el divisor y la sección de contacto, reutilizando `components/home/Reveal.tsx`.
 - Validación en cliente igual que la plantilla: si algún campo está vacío tras `trim()`, el formulario hace `shake` durante 400 ms y no se envía. El formato del correo lo valida el navegador (`type="email"`).
 - Envío con una Server Action que valida con Zod y manda un único correo al equipo con Resend.
@@ -48,9 +48,9 @@ No hay persistencia. Los tipos viven en `app/acerca/actions.ts`:
 ```ts
 // Entrada de la Server Action
 type ContactInput = {
-  name: string;    // 1–80 caracteres tras trim
-  email: string;   // email válido, máx. 254
-  msg: string;     // 1–2000 caracteres tras trim
+  name: string; // 1–80 caracteres tras trim
+  email: string; // email válido, máx. 254
+  msg: string; // 1–2000 caracteres tras trim
   website: string; // honeypot; debe llegar vacío
 };
 
@@ -163,15 +163,15 @@ Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.m
 
 ## Riesgos
 
-| Riesgo | Mitigación |
-| --- | --- |
-| Con el dominio de pruebas (`onboarding@resend.dev`), Resend solo entrega al correo del dueño de la cuenta | `CONTACT_TO_EMAIL` debe ser ese correo hasta verificar un dominio. Se documenta en `.env.example`. |
-| Faltan variables de entorno en producción | La acción devuelve `error: "config"` y se ve la terminal de error; nunca un 500. |
-| Inyección de HTML en el correo a través del mensaje o el nombre | Escapar `&`, `<`, `>`, `"` y `'` antes de construir el `html`. Criterio de aceptación explícito. |
-| Abuso del formulario por bots que ignoran el honeypot | Aceptado para esta versión. Rate limit o CAPTCHA en otra spec si aparece spam. |
-| Fuga de la API key al cliente | Solo se lee en `actions.ts` (`"use server"`). Criterio con `grep` sobre `.next/static`. |
-| API de Zod distinta entre v3 y v4 (`z.string().email()` frente a `z.email()`) | Usar la API de la versión instalada en el paso 3. |
-| `.reveal` empieza con `opacity: 0`; si el JS falla, la sección de contacto queda invisible | Igual que en la SPEC 02: `Reveal` es mínimo y la regla de reduced-motion de `globals.css` ya muestra los `.reveal`. |
+| Riesgo                                                                                                    | Mitigación                                                                                                          |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Con el dominio de pruebas (`onboarding@resend.dev`), Resend solo entrega al correo del dueño de la cuenta | `CONTACT_TO_EMAIL` debe ser ese correo hasta verificar un dominio. Se documenta en `.env.example`.                  |
+| Faltan variables de entorno en producción                                                                 | La acción devuelve `error: "config"` y se ve la terminal de error; nunca un 500.                                    |
+| Inyección de HTML en el correo a través del mensaje o el nombre                                           | Escapar `&`, `<`, `>`, `"` y `'` antes de construir el `html`. Criterio de aceptación explícito.                    |
+| Abuso del formulario por bots que ignoran el honeypot                                                     | Aceptado para esta versión. Rate limit o CAPTCHA en otra spec si aparece spam.                                      |
+| Fuga de la API key al cliente                                                                             | Solo se lee en `actions.ts` (`"use server"`). Criterio con `grep` sobre `.next/static`.                             |
+| API de Zod distinta entre v3 y v4 (`z.string().email()` frente a `z.email()`)                             | Usar la API de la versión instalada en el paso 3.                                                                   |
+| `.reveal` empieza con `opacity: 0`; si el JS falla, la sección de contacto queda invisible                | Igual que en la SPEC 02: `Reveal` es mínimo y la regla de reduced-motion de `globals.css` ya muestra los `.reveal`. |
 
 ## Lo que **no** entra en esta spec
 

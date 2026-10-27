@@ -1,21 +1,17 @@
 "use client";
-
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import GameOverModal from "@/components/GameOverModal";
 import type { Game } from "@/lib/games";
-
 // Simulated run: no real game exists yet, so the score climbs on a timer.
 const TICK_MS = 220;
 const START = { score: 0, level: 1 };
-
 export default function GamePlayer({ game }: { game: Game }) {
   const [run, setRun] = useState(START);
   const [lives, setLives] = useState(3);
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
   const [name, setName] = useState("INVITADO");
-
   // Unmounting the modal also resets its "saved" state.
   const restart = () => {
     setRun(START);
@@ -23,7 +19,6 @@ export default function GamePlayer({ game }: { game: Game }) {
     setPaused(false);
     setOver(false);
   };
-
   useEffect(() => {
     if (over || paused) return;
     const t = setInterval(() => {
@@ -35,7 +30,6 @@ export default function GamePlayer({ game }: { game: Game }) {
     }, TICK_MS);
     return () => clearInterval(t);
   }, [over, paused]);
-
   return (
     <div className="av-player fade-in">
       <div className="player-hud">
@@ -69,7 +63,6 @@ export default function GamePlayer({ game }: { game: Game }) {
           </Link>
         </div>
       </div>
-
       <div className="crt">
         <div className="crt-screen">
           <div className="game-arena">
@@ -96,9 +89,13 @@ export default function GamePlayer({ game }: { game: Game }) {
           <span>CARGA · 1MB</span>
         </div>
       </div>
-
       {over && (
-        <GameOverModal score={run.score} name={name} onNameChange={setName} onRestart={restart} />
+        <GameOverModal
+          score={run.score}
+          name={name}
+          onNameChange={setName}
+          onRestart={restart}
+        />
       )}
     </div>
   );

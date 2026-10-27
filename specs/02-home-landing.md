@@ -117,13 +117,13 @@ Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.m
 
 ## Riesgos
 
-| Riesgo | Mitigación |
-| --- | --- |
-| `.reveal` empieza con `opacity: 0`; si el JS falla o tarda, las secciones quedan invisibles | `Reveal.tsx` se monta en la misma página y es mínimo; con reduced-motion el CSS las muestra sin depender del JS. |
-| Algún enlace a `/` pensado para la Biblioteca queda sin actualizar y lleva a la landing | El paso 2 incluye un `grep` que lista todos los enlaces restantes a `/`. |
-| Conflicto de nombres entre las clases nuevas de la home y las existentes en `globals.css` (`.stat-*`, `.btn.xl`, `.pulse`, `.blink`) | Copiar los bloques tal cual de la plantilla, donde ya conviven, y comparar con Playwright Biblioteca, Detalle y Salón además de la home. |
-| Desbordamiento horizontal a 375 px en hero, siluetas o rejillas | Criterio explícito a 375 px; si la plantilla también desborda, corregirlo en `globals.css` y registrarlo como decisión, como en la SPEC 01. |
-| `IntersectionObserver` en el render de servidor | Solo se usa dentro de `useEffect` en `Reveal.tsx`. |
+| Riesgo                                                                                                                               | Mitigación                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.reveal` empieza con `opacity: 0`; si el JS falla o tarda, las secciones quedan invisibles                                          | `Reveal.tsx` se monta en la misma página y es mínimo; con reduced-motion el CSS las muestra sin depender del JS.                            |
+| Algún enlace a `/` pensado para la Biblioteca queda sin actualizar y lleva a la landing                                              | El paso 2 incluye un `grep` que lista todos los enlaces restantes a `/`.                                                                    |
+| Conflicto de nombres entre las clases nuevas de la home y las existentes en `globals.css` (`.stat-*`, `.btn.xl`, `.pulse`, `.blink`) | Copiar los bloques tal cual de la plantilla, donde ya conviven, y comparar con Playwright Biblioteca, Detalle y Salón además de la home.    |
+| Desbordamiento horizontal a 375 px en hero, siluetas o rejillas                                                                      | Criterio explícito a 375 px; si la plantilla también desborda, corregirlo en `globals.css` y registrarlo como decisión, como en la SPEC 01. |
+| `IntersectionObserver` en el render de servidor                                                                                      | Solo se usa dentro de `useEffect` en `Reveal.tsx`.                                                                                          |
 
 ## Lo que **no** entra en esta spec
 

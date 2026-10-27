@@ -46,19 +46,19 @@ export type Category = "ARCADE" | "PUZZLE" | "SHOOTER" | "VERSUS";
 export type GameColor = "cyan" | "magenta" | "yellow" | "green";
 
 export interface Game {
-  id: string;          // slug usado en la URL: "bloque-buster"
-  title: string;       // "BLOQUE BUSTER"
-  short: string;       // descripción de tarjeta
-  long: string;        // descripción de detalle
+  id: string; // slug usado en la URL: "bloque-buster"
+  title: string; // "BLOQUE BUSTER"
+  short: string; // descripción de tarjeta
+  long: string; // descripción de detalle
   cat: Category;
-  cover: string;       // clase CSS de portada: "cover-bricks"
-  color: GameColor;    // color del botón JUGAR
-  best: number;        // mejor puntuación global
-  plays: string;       // "12.4K"
+  cover: string; // clase CSS de portada: "cover-bricks"
+  color: GameColor; // color del botón JUGAR
+  best: number; // mejor puntuación global
+  plays: string; // "12.4K"
 }
 
-export const GAMES: Game[];                              // los 8 juegos de la plantilla
-export const CATS: readonly ["TODOS", ...Category[]];   // filtros de la Biblioteca
+export const GAMES: Game[]; // los 8 juegos de la plantilla
+export const CATS: readonly ["TODOS", ...Category[]]; // filtros de la Biblioteca
 export function getGame(id: string): Game | undefined;
 ```
 
@@ -68,10 +68,10 @@ export interface ScoreRow {
   rank: number;
   name: string;
   score: number;
-  date: string;        // "DD/MM/2026"
+  date: string; // "DD/MM/2026"
 }
 
-export const PLAYERS: string[];                          // los 18 alias de la plantilla
+export const PLAYERS: string[]; // los 18 alias de la plantilla
 export function seededScores(seed: number, count?: number): ScoreRow[];
 ```
 
@@ -175,12 +175,12 @@ Antes de escribir UI se invoca el skill `/frontend-design`, como exige `CLAUDE.m
 
 ## Riesgos
 
-| Riesgo | Mitigación |
-| --- | --- |
-| `params` síncrono (patrón de Next 15 o anterior) rompe el build en Next 16 | Siempre `await params`; consultar `node_modules/next/dist/docs/` antes de escribir las páginas. |
-| Desajuste de hidratación por `Math.random` en la simulación | La simulación solo corre dentro de `useEffect` en el cliente; el render inicial siempre muestra 0. |
-| Diferencias visuales respecto a la plantilla al convertir estilos inline | Comparar cada pantalla lado a lado con `reference/resources/templates/Arcade Vault.html` abierto en el navegador. |
-| Efecto tilt que escribe `style.transform` choca con el `:hover` de `.card` | Mantener el mismo enfoque de la plantilla (ref + reset en `mouseleave`), que ya resuelve ese caso. |
+| Riesgo                                                                     | Mitigación                                                                                                        |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `params` síncrono (patrón de Next 15 o anterior) rompe el build en Next 16 | Siempre `await params`; consultar `node_modules/next/dist/docs/` antes de escribir las páginas.                   |
+| Desajuste de hidratación por `Math.random` en la simulación                | La simulación solo corre dentro de `useEffect` en el cliente; el render inicial siempre muestra 0.                |
+| Diferencias visuales respecto a la plantilla al convertir estilos inline   | Comparar cada pantalla lado a lado con `reference/resources/templates/Arcade Vault.html` abierto en el navegador. |
+| Efecto tilt que escribe `style.transform` choca con el `:hover` de `.card` | Mantener el mismo enfoque de la plantilla (ref + reset en `mouseleave`), que ya resuelve ese caso.                |
 
 ## Lo que **no** entra en esta spec
 
