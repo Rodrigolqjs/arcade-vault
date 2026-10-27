@@ -1,5 +1,4 @@
 export type FeatureIconKind = "GAMEPAD" | "FREE" | "TROPHY" | "ROCKET";
-
 // Iconos pixel dibujados con rects; toman el color de la tarjeta vía currentColor
 export default function FeatureIcon({ kind }: { kind: FeatureIconKind }) {
   const C = "currentColor";
@@ -21,7 +20,15 @@ export default function FeatureIcon({ kind }: { kind: FeatureIconKind }) {
     return (
       <svg className="ft-icon" viewBox="0 0 16 16">
         <g fill={C}>
-          <rect x="3" y="3" width="10" height="10" fill="none" stroke={C} strokeWidth="1.5" />
+          <rect
+            x="3"
+            y="3"
+            width="10"
+            height="10"
+            fill="none"
+            stroke={C}
+            strokeWidth="1.5"
+          />
           <rect x="5" y="6" width="1.5" height="4" />
           <rect x="5" y="6" width="4" height="1.5" />
           <rect x="5" y="8" width="3" height="1" />

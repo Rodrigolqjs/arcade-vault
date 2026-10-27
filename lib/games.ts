@@ -1,8 +1,6 @@
 // Mock game catalog, ported from reference/resources/templates/data.jsx.
-
 export type Category = "ARCADE" | "PUZZLE" | "SHOOTER" | "VERSUS";
 export type GameColor = "cyan" | "magenta" | "yellow" | "green";
-
 export interface Game {
   id: string;
   title: string;
@@ -14,7 +12,6 @@ export interface Game {
   best: number;
   plays: string;
 }
-
 export const GAMES: Game[] = [
   {
     id: "bloque-buster",
@@ -105,14 +102,14 @@ export const GAMES: Game[] = [
     plays: "4.2K",
   },
 ];
-
-export const CATS = ["TODOS", "ARCADE", "PUZZLE", "SHOOTER", "VERSUS"] as const satisfies readonly [
+export const CATS = [
   "TODOS",
-  ...Category[],
-];
-
+  "ARCADE",
+  "PUZZLE",
+  "SHOOTER",
+  "VERSUS",
+] as const satisfies readonly ["TODOS", ...Category[]];
 export type CategoryFilter = (typeof CATS)[number];
-
 export function getGame(id: string): Game | undefined {
   return GAMES.find((g) => g.id === id);
 }

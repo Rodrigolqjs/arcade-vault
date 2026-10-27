@@ -1,25 +1,19 @@
 "use client";
-
 import { useState, useTransition, type FormEvent } from "react";
 import { sendContactMessage, type ContactResult } from "@/app/acerca/actions";
-
 const EMPTY_FORM = { name: "", email: "", msg: "", website: "" };
-
 type ContactError = Extract<ContactResult, { ok: false }>["error"];
-
 const ERROR_MESSAGES: Record<ContactError, string> = {
   validation: "DATOS NO VÁLIDOS. REVISA LOS CAMPOS E INTÉNTALO DE NUEVO.",
   config: "NO PUDIMOS ENVIAR TU MENSAJE. INTÉNTALO DE NUEVO EN UNOS MINUTOS.",
   send: "NO PUDIMOS ENVIAR TU MENSAJE. INTÉNTALO DE NUEVO EN UNOS MINUTOS.",
 };
-
 export default function ContactForm() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [sent, setSent] = useState<string | null>(null);
   const [error, setError] = useState<ContactError | null>(null);
   const [shake, setShake] = useState(false);
   const [pending, startTransition] = useTransition();
-
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (pending) return;
@@ -38,14 +32,15 @@ export default function ContactForm() {
       }
     });
   };
-
   const reset = () => {
     setSent(null);
     setForm(EMPTY_FORM);
   };
-
   return (
-    <form className={"contact-form" + (shake ? " shake" : "")} onSubmit={onSubmit}>
+    <form
+      className={"contact-form" + (shake ? " shake" : "")}
+      onSubmit={onSubmit}
+    >
       {sent === null && error === null ? (
         <>
           <div className="field">
@@ -89,7 +84,11 @@ export default function ContactForm() {
               onChange={(e) => setForm({ ...form, website: e.target.value })}
             />
           </div>
-          <button className="btn xl press w-full" type="submit" disabled={pending}>
+          <button
+            className="btn xl press w-full"
+            type="submit"
+            disabled={pending}
+          >
             {pending ? "TRANSMITIENDO…" : "▶  ENVIAR MENSAJE"}
           </button>
         </>
@@ -103,7 +102,8 @@ export default function ContactForm() {
           </div>
           <div className="term-body">
             <div className="line">
-              <span className="prompt">vault@arcade:~$</span> ./send_message --to=team
+              <span className="prompt">vault@arcade:~$</span> ./send_message
+              --to=team
             </div>
             {error ? (
               <>
@@ -114,7 +114,11 @@ export default function ContactForm() {
                   <span className="caret">_</span>
                 </div>
                 <div className="mt-[18px]">
-                  <button className="btn ghost" type="button" onClick={() => setError(null)}>
+                  <button
+                    className="btn ghost"
+                    type="button"
+                    onClick={() => setError(null)}
+                  >
                     REINTENTAR
                   </button>
                 </div>
@@ -125,8 +129,8 @@ export default function ContactForm() {
                 <div className="line dim">[OK] Validando contenido…</div>
                 <div className="line dim">[OK] Transmitiendo paquete…</div>
                 <div className="line success">
-                  &gt; MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, {sent?.toUpperCase()}.
-                  <span className="caret">_</span>
+                  &gt; MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS,{" "}
+                  {sent?.toUpperCase()}.<span className="caret">_</span>
                 </div>
                 <div className="mt-[18px]">
                   <button className="btn ghost" type="button" onClick={reset}>

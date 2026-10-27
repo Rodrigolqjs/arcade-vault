@@ -3,18 +3,16 @@ import { notFound } from "next/navigation";
 import Leaderboard from "@/components/Leaderboard";
 import { GAMES, getGame } from "@/lib/games";
 import { seededScores } from "@/lib/scores";
-
 export function generateStaticParams() {
   return GAMES.map((g) => ({ id: g.id }));
 }
-
-export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]">) {
+export default async function GameDetailPage({
+  params,
+}: PageProps<"/juegos/[id]">) {
   const { id } = await params;
   const game = getGame(id);
   if (!game) notFound();
-
   const scores = seededScores((GAMES.indexOf(game) + 1) * 17 + 3, 10);
-
   return (
     <div className="av-detail fade-in">
       <div>
@@ -43,7 +41,9 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
             </div>
             <div>
               <div className="l">Dificultad</div>
-              <div className="v text-yellow [text-shadow:0_0_6px_rgba(245,255,0,0.5)]">★ ★ ★ ☆ ☆</div>
+              <div className="v text-yellow [text-shadow:0_0_6px_rgba(245,255,0,0.5)]">
+                ★ ★ ★ ☆ ☆
+              </div>
             </div>
           </div>
           <div className="detail-actions">
@@ -56,7 +56,6 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
           </div>
         </div>
       </div>
-
       <aside>
         <Leaderboard rows={scores} />
       </aside>

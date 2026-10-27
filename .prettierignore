@@ -1,0 +1,8 @@
+.next/
+out/
+build/
+next-env.d.ts
+package-lock.json
+.claude/worktrees/
+# Design reference prototype, not app code (also ignored by ESLint).
+reference/
