@@ -65,6 +65,7 @@ This project uses spec-driven development: every feature is designed and impleme
 
 - `/spec <description>` writes a spec to `specs/NN-slug.md` in the `Draft` state. The user changes the state to approved by hand.
 - `/spec-impl NN-slug` only runs on approved specs. It works on a `spec-NN-slug` branch and implements the spec's plan one step at a time. `specs/.spec-config.yml` (`AutoCreateBranch`) controls whether that branch is created automatically.
+- To make a game playable (port from `reference/resources/started-games/` or a new original engine) run the project skill `/add-game <folder or id>` (`.claude/skills/add-game/`): it writes the Draft spec with the engine, player, registry and `accepts_scores` steps, which `/spec-impl` then implements.
 - If a spec exists for a feature, implement what it says. Proposed changes belong in the spec, not in code that drifts from it.
 
 ## Skills
