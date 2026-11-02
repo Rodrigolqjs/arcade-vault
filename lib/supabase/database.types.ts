@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       games: {
         Row: {
+          accepts_scores: boolean
           cat: string
           color: string
           cover: string
@@ -27,6 +28,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          accepts_scores?: boolean
           cat: string
           color: string
           cover: string
@@ -38,6 +40,7 @@ export type Database = {
           title: string
         }
         Update: {
+          accepts_scores?: boolean
           cat?: string
           color?: string
           cover?: string
@@ -50,9 +53,55 @@ export type Database = {
         }
         Relationships: []
       }
+      scores: {
+        Row: {
+          created_at: string
+          game_id: string
+          id: number
+          name: string
+          score: number
+        }
+        Insert: {
+          created_at?: string
+          game_id: string
+          id?: never
+          name: string
+          score: number
+        }
+        Update: {
+          created_at?: string
+          game_id?: string
+          id?: never
+          name?: string
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scores_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "game_stats"
+            referencedColumns: ["game_id"]
+          },
+          {
+            foreignKeyName: "scores_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      game_stats: {
+        Row: {
+          best: number | null
+          game_id: string | null
+          plays: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       health: { Args: never; Returns: boolean }

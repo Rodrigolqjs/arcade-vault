@@ -1,6 +1,6 @@
 # SPEC 07 — Leaderboard con puntuaciones reales
 
-> **Estado:** Borrador
+> **Estado:** implementada
 > **Depende de:** SPEC 05, SPEC 06
 > **Fecha:** 2026-11-02
 > **Objetivo:** Guardar en Supabase las puntuaciones de los juegos reales desde el modal "FIN DEL JUEGO" y mostrarlas en el leaderboard del detalle y en el Salón de la Fama.

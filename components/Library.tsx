@@ -1,8 +1,15 @@
 "use client";
 import { useState } from "react";
 import GameCard from "@/components/GameCard";
+import type { GameStats } from "@/lib/data/scores";
 import { CATS, type CategoryFilter, type Game } from "@/lib/games";
-export default function Library({ games }: { games: Game[] }) {
+export default function Library({
+  games,
+  stats,
+}: {
+  games: Game[];
+  stats: Record<string, GameStats>;
+}) {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<CategoryFilter>("TODOS");
   const filtered = games.filter(
@@ -42,7 +49,7 @@ export default function Library({ games }: { games: Game[] }) {
       </div>
       <div className="av-grid">
         {filtered.map((g) => (
-          <GameCard key={g.id} game={g} />
+          <GameCard key={g.id} game={g} best={stats[g.id]?.best ?? null} />
         ))}
         {filtered.length === 0 && (
           <div className="col-span-full p-20 text-center text-ink-faint">
