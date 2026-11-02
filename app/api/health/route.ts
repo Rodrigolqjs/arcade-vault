@@ -1,12 +1,8 @@
 // GET /api/health: checks end to end (env, network, database) that Supabase responds.
 // Error details are only logged on the server; the body is always { ok }.
-
 import { createClient } from "@/lib/supabase/server";
-
 type HealthResponse = { ok: true } | { ok: false };
-
 const headers = { "Cache-Control": "no-store" };
-
 export async function GET() {
   try {
     const supabase = await createClient();

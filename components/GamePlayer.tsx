@@ -1,7 +1,7 @@
 "use client";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import GameOverModal from "@/components/GameOverModal";
+import PlayerHud from "@/components/PlayerHud";
 import type { Game } from "@/lib/games";
 // Simulated run: no real game exists yet, so the score climbs on a timer.
 const TICK_MS = 220;
@@ -32,37 +32,16 @@ export default function GamePlayer({ game }: { game: Game }) {
   }, [over, paused]);
   return (
     <div className="av-player fade-in">
-      <div className="player-hud">
-        <div className="flex flex-wrap gap-6">
-          <div className="hud-stat">
-            <div className="l">Jugador</div>
-            <div className="v text-ink">{name}</div>
-          </div>
-          <div className="hud-stat">
-            <div className="l">Puntuación</div>
-            <div className="v">{run.score.toLocaleString("es-ES")}</div>
-          </div>
-          <div className="hud-stat lives">
-            <div className="l">Vidas</div>
-            <div className="v">{"♥ ".repeat(lives).trim() || "—"}</div>
-          </div>
-          <div className="hud-stat level">
-            <div className="l">Nivel</div>
-            <div className="v">{String(run.level).padStart(2, "0")}</div>
-          </div>
-        </div>
-        <div className="hud-actions">
-          <button className="btn yellow" onClick={() => setPaused((p) => !p)}>
-            {paused ? "REANUDAR" : "PAUSA"}
-          </button>
-          <button className="btn magenta" onClick={() => setOver(true)}>
-            FIN
-          </button>
-          <Link href={`/juegos/${game.id}`} className="btn ghost">
-            SALIR
-          </Link>
-        </div>
-      </div>
+      <PlayerHud
+        name={name}
+        score={run.score}
+        lives={lives}
+        level={run.level}
+        paused={paused}
+        onTogglePause={() => setPaused((p) => !p)}
+        onEnd={() => setOver(true)}
+        exitHref={`/juegos/${game.id}`}
+      />
       <div className="crt">
         <div className="crt-screen">
           <div className="game-arena">
