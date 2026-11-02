@@ -2,11 +2,11 @@
 import { useEffect, useState } from "react";
 import GameOverModal from "@/components/GameOverModal";
 import PlayerHud from "@/components/PlayerHud";
-import type { CatalogGame } from "@/lib/games";
+import type { Game } from "@/lib/games";
 // Simulated run: no real game exists yet, so the score climbs on a timer.
 const TICK_MS = 220;
 const START = { score: 0, level: 1 };
-export default function GamePlayer({ game }: { game: CatalogGame }) {
+export default function GamePlayer({ game }: { game: Game }) {
   const [run, setRun] = useState(START);
   const [lives, setLives] = useState(3);
   const [paused, setPaused] = useState(false);

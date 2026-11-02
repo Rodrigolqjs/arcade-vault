@@ -2,7 +2,7 @@
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import GameOverModal from "@/components/GameOverModal";
 import PlayerHud from "@/components/PlayerHud";
-import type { CatalogGame } from "@/lib/games";
+import type { Game } from "@/lib/games";
 import {
   type AsteroidsGame,
   type HudState,
@@ -17,7 +17,7 @@ const GAME_KEYS = new Set([
   "ArrowRight",
   "Space",
 ]);
-export default function AsteroidsPlayer({ game }: { game: CatalogGame }) {
+export default function AsteroidsPlayer({ game }: { game: Game }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<AsteroidsGame | null>(null);
   const [phase, setPhase] = useState<Phase>("ready");

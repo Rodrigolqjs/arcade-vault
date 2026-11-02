@@ -39,7 +39,7 @@ export default function GameCard({ game }: { game: Game }) {
         <div className="row">
           <div className="score-badge">
             <span>MEJOR PUNTUACIÓN</span>
-            <b>{game.best.toLocaleString("es-ES")}</b>
+            <b>—</b>
           </div>
           {/* The whole card is the link; a nested <button> inside <a> would be invalid HTML. */}
           <span className={"btn" + BUTTON_COLOR[game.color]}>JUGAR</span>

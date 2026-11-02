@@ -1,4 +1,5 @@
 import Library from "@/components/Library";
-export default function BibliotecaPage() {
-  return <Library />;
+import { getGames } from "@/lib/data/games";
+export default async function BibliotecaPage() {
+  return <Library games={await getGames()} />;
 }

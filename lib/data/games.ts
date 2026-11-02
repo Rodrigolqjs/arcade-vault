@@ -1,12 +1,12 @@
 // Server-side reads of the game catalog (public.games). Errors are logged here
 // and rethrown as a generic Error, which app/error.tsx catches.
-import type { CatalogGame, Category, GameColor } from "@/lib/games";
+import type { Category, Game, GameColor } from "@/lib/games";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
 type GameRow = Database["public"]["Tables"]["games"]["Row"];
 const COLUMNS = "id, title, short, long, cat, cover, color";
 // cat and color arrive as string; the table's check constraints guarantee the values.
-function toGame(row: Omit<GameRow, "sort_order" | "created_at">): CatalogGame {
+function toGame(row: Omit<GameRow, "sort_order" | "created_at">): Game {
   return {
     id: row.id,
     title: row.title,
@@ -17,7 +17,7 @@ function toGame(row: Omit<GameRow, "sort_order" | "created_at">): CatalogGame {
     color: row.color as GameColor,
   };
 }
-export async function getGames(): Promise<CatalogGame[]> {
+export async function getGames(): Promise<Game[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("games")
@@ -29,7 +29,7 @@ export async function getGames(): Promise<CatalogGame[]> {
   }
   return data.map(toGame);
 }
-export async function getGame(id: string): Promise<CatalogGame | null> {
+export async function getGame(id: string): Promise<Game | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("games")
