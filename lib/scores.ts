@@ -26,6 +26,12 @@ export const PLAYERS: string[] = [
   "VECTORX",
   "JOY_STK",
 ];
+// Stable seed per game id, so a game's mock board doesn't depend on catalog order.
+export function seedFromId(id: string): number {
+  let h = 0;
+  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) % 233280;
+  return h;
+}
 export function seededScores(seed: number, count = 12): ScoreRow[] {
   let s = seed;
   const rand = () => (s = (s * 9301 + 49297) % 233280) / 233280;

@@ -5,7 +5,8 @@ import FeatureIcon, {
 import FloatingSilhouettes from "@/components/home/FloatingSilhouettes";
 import MiniCard from "@/components/home/MiniCard";
 import Reveal from "@/components/home/Reveal";
-import { GAMES, type GameColor } from "@/lib/games";
+import { getGames } from "@/lib/data/games";
+import type { GameColor } from "@/lib/games";
 const FEATURES: { i: FeatureIconKind; t: string; d: string; c: GameColor }[] = [
   {
     i: "GAMEPAD",
@@ -82,7 +83,8 @@ const FAQ = [
     a: "Es un proyecto comunitario. Si te gusta, compártelo. Esa es toda la moneda que aceptamos.",
   },
 ];
-export default function Home() {
+export default async function Home() {
+  const games = await getGames();
   return (
     <div className="home fade-in">
       <Reveal />
@@ -146,7 +148,7 @@ export default function Home() {
           <div className="section-rule" />
         </div>
         <div className="mini-rail">
-          {GAMES.slice(0, 6).map((g) => (
+          {games.slice(0, 6).map((g) => (
             <MiniCard key={g.id} game={g} />
           ))}
         </div>

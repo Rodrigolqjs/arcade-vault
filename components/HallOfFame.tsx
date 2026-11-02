@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { GAMES } from "@/lib/games";
+import type { Game } from "@/lib/games";
 import { seededScores } from "@/lib/scores";
 const PODIUM = ["top1", "top2", "top3"];
 const fmt = (n: number) => n.toLocaleString("es-ES");
-export default function HallOfFame() {
-  const [tab, setTab] = useState(GAMES[0].id);
-  const index = GAMES.findIndex((g) => g.id === tab);
+export default function HallOfFame({ games }: { games: Game[] }) {
+  const [tab, setTab] = useState(games[0].id);
+  const index = games.findIndex((g) => g.id === tab);
   const rows = seededScores((index + 1) * 23 + 7, 12);
   const [first, second, third] = rows;
   return (
@@ -19,7 +19,7 @@ export default function HallOfFame() {
         </p>
       </div>
       <div className="hall-tabs">
-        {GAMES.map((g) => (
+        {games.map((g) => (
           <button
             key={g.id}
             className={"chip" + (tab === g.id ? " active" : "")}
