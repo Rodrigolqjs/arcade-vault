@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Arcade Vault is an online platform for playing games and competing for the highest score. It is currently the unmodified `create-next-app` scaffold. The README is written in Spanish.
+Arcade Vault is an online platform for playing games and competing for the highest score. The game catalog in `lib/games.ts` is mock data, and only some entries have a real game; the rest use a simulated player. The README is written in Spanish.
 
 ## Commands
 
@@ -37,6 +37,11 @@ No test framework is set up yet. `npx supabase login` and `npx supabase link --p
   - `supabase/`: CLI project (`config.toml`, `migrations/`). `supabase/.temp/` holds the local link and is git-ignored. The schema only changes through migrations in `supabase/migrations/`, never directly in the dashboard or via the MCP.
   - `GET /api/health` (`app/api/health/route.ts`) calls `rpc("health")` and returns `200 {ok:true}` or `503 {ok:false}`; error details are only logged server-side.
   - There is no `proxy.ts` yet; session refresh arrives with the auth spec.
+- Games: `/juegos/[id]/jugar` mounts a real game when `isPlayable(id)` (`lib/games/registry.ts`) and the simulated `components/GamePlayer.tsx` otherwise.
+  - `lib/games/<game>/`: framework-free canvas engines, ported from `reference/resources/started-games/` (never imported directly). An engine owns its state, input listeners and `requestAnimationFrame` loop, exposes `start/pause/resume/end/destroy`, and reports to React through callbacks (`onHud` only when a value changes, `onGameOver`).
+  - `components/games/<Game>Player.tsx`: Client Component that creates the engine in `useEffect`, destroys it in the cleanup (StrictMode mounts twice in dev), and renders the shared `PlayerHud`, the CRT and `GameOverModal`.
+  - `components/games/RealGamePlayer.tsx`: maps each playable id to its player with `next/dynamic` and `ssr: false`, which only works inside a Client Component.
+  - To add a real game: write the engine and player, add the id to `PLAYABLE_GAME_IDS`, and add its entry to the map in `RealGamePlayer.tsx`.
 
 ### Next 16 changes that are easy to get wrong
 
