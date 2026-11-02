@@ -1,18 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Leaderboard from "@/components/Leaderboard";
-import { GAMES, getGame } from "@/lib/games";
-import { seededScores } from "@/lib/scores";
-export function generateStaticParams() {
-  return GAMES.map((g) => ({ id: g.id }));
-}
+import { getGame } from "@/lib/data/games";
+import { seedFromId, seededScores } from "@/lib/scores";
 export default async function GameDetailPage({
   params,
 }: PageProps<"/juegos/[id]">) {
   const { id } = await params;
-  const game = getGame(id);
+  const game = await getGame(id);
   if (!game) notFound();
-  const scores = seededScores((GAMES.indexOf(game) + 1) * 17 + 3, 10);
+  // Mock scores until SPEC 07; the seed only depends on the id.
+  const scores = seededScores(seedFromId(game.id), 10);
   return (
     <div className="av-detail fade-in">
       <div>
@@ -31,12 +29,12 @@ export default async function GameDetailPage({
           <div className="stat-strip">
             <div>
               <div className="l">Partidas</div>
-              <div className="v">{game.plays}</div>
+              <div className="v">—</div>
             </div>
             <div>
               <div className="l">Mejor global</div>
               <div className="v text-magenta [text-shadow:0_0_6px_rgba(255,0,110,0.5)]">
-                {game.best.toLocaleString("es-ES")}
+                —
               </div>
             </div>
             <div>

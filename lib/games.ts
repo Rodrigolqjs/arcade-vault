@@ -12,6 +12,8 @@ export interface Game {
   best: number;
   plays: string;
 }
+// Temporary until step 5 of SPEC 06 drops best/plays from Game.
+export type CatalogGame = Omit<Game, "best" | "plays">;
 export const GAMES: Game[] = [
   {
     id: "bloque-buster",
