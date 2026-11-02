@@ -8,6 +8,9 @@ const PLAYERS: Record<PlayableGameId, ComponentType<{ game: Game }>> = {
   rocas: dynamic(() => import("@/components/games/AsteroidsPlayer"), {
     ssr: false,
   }),
+  caida: dynamic(() => import("@/components/games/TetrisPlayer"), {
+    ssr: false,
+  }),
 };
 export default function RealGamePlayer({
   id,

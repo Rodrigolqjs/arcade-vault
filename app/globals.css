@@ -1103,6 +1103,10 @@
     color: var(--magenta);
     text-shadow: 0 0 6px rgba(255, 0, 110, 0.5);
   }
+  .hud-stat.lines .v {
+    color: var(--green);
+    text-shadow: 0 0 6px rgba(0, 255, 136, 0.5);
+  }
   .hud-stat.level .v {
     color: var(--yellow);
     text-shadow: 0 0 6px rgba(245, 255, 0, 0.5);
