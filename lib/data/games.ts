@@ -6,7 +6,12 @@ import type { Database } from "@/lib/supabase/database.types";
 type GameRow = Database["public"]["Tables"]["games"]["Row"];
 const COLUMNS = "id, title, short, long, cat, cover, color";
 // cat and color arrive as string; the table's check constraints guarantee the values.
-function toGame(row: Omit<GameRow, "sort_order" | "created_at">): Game {
+function toGame(
+  row: Pick<
+    GameRow,
+    "id" | "title" | "short" | "long" | "cat" | "cover" | "color"
+  >,
+): Game {
   return {
     id: row.id,
     title: row.title,

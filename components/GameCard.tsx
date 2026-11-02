@@ -8,7 +8,13 @@ const BUTTON_COLOR: Record<Game["color"], string> = {
   magenta: " magenta",
   yellow: " yellow",
 };
-export default function GameCard({ game }: { game: Game }) {
+export default function GameCard({
+  game,
+  best,
+}: {
+  game: Game;
+  best: number | null;
+}) {
   const tiltRef = useRef<HTMLAnchorElement>(null);
   const onMove = (e: MouseEvent<HTMLAnchorElement>) => {
     const el = tiltRef.current;
@@ -39,7 +45,7 @@ export default function GameCard({ game }: { game: Game }) {
         <div className="row">
           <div className="score-badge">
             <span>MEJOR PUNTUACIÓN</span>
-            <b>—</b>
+            <b>{best === null ? "—" : best.toLocaleString("es-ES")}</b>
           </div>
           {/* The whole card is the link; a nested <button> inside <a> would be invalid HTML. */}
           <span className={"btn" + BUTTON_COLOR[game.color]}>JUGAR</span>

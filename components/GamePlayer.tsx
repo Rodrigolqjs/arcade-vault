@@ -70,6 +70,8 @@ export default function GamePlayer({ game }: { game: Game }) {
       </div>
       {over && (
         <GameOverModal
+          gameId={game.id}
+          saveable={false}
           score={run.score}
           name={name}
           onNameChange={setName}

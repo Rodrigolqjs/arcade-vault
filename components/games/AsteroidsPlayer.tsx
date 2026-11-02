@@ -131,6 +131,8 @@ export default function AsteroidsPlayer({ game }: { game: Game }) {
       </div>
       {phase === "over" && (
         <GameOverModal
+          gameId={game.id}
+          saveable
           score={finalScore}
           name={name}
           onNameChange={setName}
