@@ -511,6 +511,22 @@
   .av-hero .sub .blink {
     animation: blink 1.2s steps(1, end) infinite;
   }
+  /* Lost signal (app/error.tsx): the title drops from cyan to magenta. */
+  .av-hero.offline h1 {
+    background: linear-gradient(180deg, #fff 0%, var(--magenta) 70%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(255, 0, 110, 0.45));
+  }
+  .av-hero.offline .sub {
+    color: var(--magenta);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .av-hero.offline .flicker,
+    .av-hero.offline .blink {
+      animation: none;
+    }
+  }
   @keyframes blink {
     50% {
       opacity: 0;
