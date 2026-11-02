@@ -1,6 +1,6 @@
 # SPEC 06 — Catálogo de juegos en Supabase
 
-> **Estado:** aprovada
+> **Estado:** implementada
 > **Depende de:** SPEC 04, SPEC 05
 > **Fecha:** 2026-11-02
 > **Objetivo:** Mover el catálogo de juegos de `lib/games.ts` a una tabla `public.games` en Supabase y hacer que todas las páginas lo lean de la base de datos por petición.
