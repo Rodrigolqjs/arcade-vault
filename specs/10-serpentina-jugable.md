@@ -1,6 +1,6 @@
 # SPEC 10 — Serpiente jugable en SERPENTINA
 
-> **Estado:** Aprovada
+> **Estado:** implementada
 > **Depende de:** SPEC 05, SPEC 06, SPEC 07
 > **Fecha:** 2026-11-02
 > **Objetivo:** Crear un juego original de serpiente en grilla y montarlo en `/juegos/serpentina/jugar` con el HUD, la pausa, el modal de fin de juego y el leaderboard real de la plataforma.

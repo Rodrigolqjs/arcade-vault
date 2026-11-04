@@ -11,6 +11,9 @@ const PLAYERS: Record<PlayableGameId, ComponentType<{ game: Game }>> = {
   caida: dynamic(() => import("@/components/games/TetrisPlayer"), {
     ssr: false,
   }),
+  serpentina: dynamic(() => import("@/components/games/SnakePlayer"), {
+    ssr: false,
+  }),
 };
 export default function RealGamePlayer({
   id,
