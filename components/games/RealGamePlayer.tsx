@@ -14,6 +14,9 @@ const PLAYERS: Record<PlayableGameId, ComponentType<{ game: Game }>> = {
   serpentina: dynamic(() => import("@/components/games/SnakePlayer"), {
     ssr: false,
   }),
+  "bloque-buster": dynamic(() => import("@/components/games/ArkanoidPlayer"), {
+    ssr: false,
+  }),
 };
 export default function RealGamePlayer({
   id,
