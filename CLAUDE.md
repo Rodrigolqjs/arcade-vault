@@ -101,3 +101,10 @@ Usa siempre /frontend-design para diseñar la interfaz de usuario.
 - `/spec` and `/spec-impl` (global, `~/.claude/skills/`): design and implement features.
 - `/add-game <folder or id>` (project, `.claude/skills/add-game/`, with `spec-template.md` and `checklist.md`): writes the spec that makes a game playable. Only the user can invoke it (`disable-model-invocation`).
 - `/frontend-design`: required for any UI work.
+
+## Agents
+
+- `game-planner` (project, `.claude/agents/game-planner.md`): plans and decides which game fits the platform next. It reads the catalog (migrations of `public.games`), `PLAYABLE_GAME_IDS`, `reference/resources/started-games/` and `specs/`, scores 3–5 candidates (original or genre-based, never clones of a specific commercial game) and recommends one with its next step, `/add-game <id>`. It writes no code or specs.
+  - Memory: `memory: project`, stored in `.claude/agent-memory/game-planner/` (`MEMORY.md` index plus `suggestions.md`, a log of every suggestion with its state), so it doesn't repeat or reopen discarded ideas.
+  - To Do: on every run it creates or updates `reference/game-suggestions-todo.md` (Recomendado ahora / Pendientes / En curso / Hechas / Descartadas). It edits the file in place and respects boxes the user ticks by hand.
+  - It only writes to its memory folder and that To Do file.
