@@ -2,13 +2,32 @@
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import GameOverModal from "@/components/GameOverModal";
 import PlayerHud from "@/components/PlayerHud";
+import SkinSelector, {
+  type SkinPreview,
+} from "@/components/games/SkinSelector";
 import type { Game } from "@/lib/games";
 import {
   type ArkanoidGame,
   type HudState,
   createArkanoidGame,
 } from "@/lib/games/arkanoid/engine";
+import { SKINS } from "@/lib/games/arkanoid/skins";
+import { SKIN_IDS, type SkinId, loadSkin, saveSkin } from "@/lib/games/skins";
 type Phase = "ready" | "playing" | "paused" | "over";
+// Mini screen per skin: paddle, ball and a red-row block on the skin background.
+const SKIN_PREVIEWS = Object.fromEntries(
+  SKIN_IDS.map((id) => {
+    const p = SKINS[id];
+    return [
+      id,
+      {
+        bg: p.bg,
+        colors: [p.paddle, p.ball, p.blocks.red],
+        glow: p.glow.paddle > 0,
+      },
+    ];
+  }),
+) as Record<SkinId, SkinPreview>;
 const START_HUD: HudState = { score: 0, lives: 3, level: 1 };
 const GAME_KEYS = new Set(["ArrowLeft", "ArrowRight", "Space"]);
 export default function ArkanoidPlayer({ game }: { game: Game }) {
@@ -18,6 +37,14 @@ export default function ArkanoidPlayer({ game }: { game: Game }) {
   const [hud, setHud] = useState(START_HUD);
   const [finalScore, setFinalScore] = useState(0);
   const [name, setName] = useState("INVITADO");
+  // Safe in the initializer: RealGamePlayer loads this with ssr: false.
+  const [skin, setSkinState] = useState<SkinId>(() => loadSkin(game.id));
+  const initialSkin = useRef(skin);
+  const changeSkin = (id: SkinId) => {
+    setSkinState(id);
+    saveSkin(game.id, id);
+    engineRef.current?.setSkin(id);
+  };
   const start = () => {
     engineRef.current?.start();
     setPhase("playing");
@@ -53,10 +80,15 @@ export default function ArkanoidPlayer({ game }: { game: Game }) {
   });
   const onFocusLost = useEffectEvent(() => pause());
   useEffect(() => {
-    const engine = createArkanoidGame(canvasRef.current!, {
-      onHud: setHud,
-      onGameOver: (score) => onGameOver(score),
-    });
+    // The engine is created once; later skin changes go through setSkin.
+    const engine = createArkanoidGame(
+      canvasRef.current!,
+      {
+        onHud: setHud,
+        onGameOver: (score) => onGameOver(score),
+      },
+      { skin: initialSkin.current },
+    );
     engineRef.current = engine;
     window.addEventListener("keydown", onKeyDown);
     const onVisibility = () => {
@@ -121,6 +153,12 @@ export default function ArkanoidPlayer({ game }: { game: Game }) {
           <span>CARGA · 1MB</span>
         </div>
       </div>
+      <SkinSelector
+        value={skin}
+        onChange={changeSkin}
+        previews={SKIN_PREVIEWS}
+        disabled={phase === "playing"}
+      />
       {phase === "over" && (
         <GameOverModal
           gameId={game.id}

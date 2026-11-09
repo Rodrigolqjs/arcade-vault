@@ -6,7 +6,6 @@ import {
   BLOCK_W,
   BLOCKS_ORIGIN_X,
   BLOCKS_ORIGIN_Y,
-  COLORS,
   EXPLOSION_DURATION,
   EXPLOSION_SCALE,
   PADDLE_H,
@@ -16,6 +15,7 @@ import {
   W,
 } from "@/lib/games/arkanoid/constants";
 import type { BlockColor, LevelBlock } from "@/lib/games/arkanoid/levels";
+import type { ArkanoidPalette } from "@/lib/games/arkanoid/skins";
 export type Keys = { ArrowLeft: boolean; ArrowRight: boolean };
 interface Rect {
   x: number;
@@ -29,6 +29,7 @@ const clamp = (v: number, min: number, max: number) =>
 // full color and a thin lit edge on top. Blocks and explosions share it.
 function drawTube(
   ctx: CanvasRenderingContext2D,
+  palette: ArkanoidPalette,
   color: string,
   x: number,
   y: number,
@@ -37,13 +38,14 @@ function drawTube(
 ) {
   const alpha = ctx.globalAlpha;
   ctx.fillStyle = color;
-  ctx.globalAlpha = alpha * 0.24;
+  ctx.globalAlpha = alpha * palette.tubeFill;
   ctx.fillRect(x, y, w, h);
   ctx.globalAlpha = alpha;
   ctx.strokeStyle = color;
   ctx.lineWidth = 1.5;
   ctx.strokeRect(x + 0.75, y + 0.75, w - 1.5, h - 1.5);
-  ctx.fillStyle = "rgba(255, 255, 255, 0.35)";
+  if (!palette.bevel) return;
+  ctx.fillStyle = palette.bevel;
   ctx.fillRect(x + 3, y + 3, w - 6, 1);
 }
 export class Paddle implements Rect {
@@ -64,18 +66,21 @@ export class Paddle implements Rect {
       this.x = Math.min(W - this.w, this.x + PADDLE_SPEED * dt);
   }
   // A lit capsule: glow around it and a paler core line, like a neon tube.
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, palette: ArkanoidPalette) {
     const r = this.h / 2;
     ctx.save();
-    ctx.fillStyle = COLORS.paddle;
-    ctx.shadowColor = COLORS.paddle;
-    ctx.shadowBlur = 16;
+    ctx.fillStyle = palette.paddle;
+    ctx.shadowColor = palette.paddle;
+    ctx.shadowBlur = palette.glow.paddle;
     ctx.beginPath();
-    ctx.roundRect(this.x, this.y, this.w, this.h, r);
+    if (palette.edges === "hard") ctx.rect(this.x, this.y, this.w, this.h);
+    else ctx.roundRect(this.x, this.y, this.w, this.h, r);
     ctx.fill();
     ctx.shadowBlur = 0;
-    ctx.fillStyle = "rgba(255, 255, 255, 0.55)";
-    ctx.fillRect(this.x + r, this.y + r - 1, this.w - this.h, 2);
+    if (palette.paddleCore) {
+      ctx.fillStyle = palette.paddleCore;
+      ctx.fillRect(this.x + r, this.y + r - 1, this.w - this.h, 2);
+    }
     ctx.restore();
   }
 }
@@ -110,14 +115,16 @@ export class Ball implements Rect {
       this.vy = Math.abs(this.vy);
     }
   }
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, palette: ArkanoidPalette) {
     const r = this.w / 2;
     ctx.save();
-    ctx.fillStyle = COLORS.ball;
-    ctx.shadowColor = COLORS.ball;
-    ctx.shadowBlur = 14;
+    ctx.fillStyle = palette.ball;
+    ctx.shadowColor = palette.ball;
+    ctx.shadowBlur = palette.glow.ball;
     ctx.beginPath();
-    ctx.arc(this.x + r, this.y + r, r, 0, Math.PI * 2);
+    // Square ball in hard edges: same BALL_SIZE box the AABB collision already uses.
+    if (palette.edges === "hard") ctx.rect(this.x, this.y, this.w, this.h);
+    else ctx.arc(this.x + r, this.y + r, r, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
@@ -135,10 +142,11 @@ export class Block implements Rect {
     this.color = color;
   }
   // No glow: 60 blocks with shadowBlur would cost frames.
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, palette: ArkanoidPalette) {
     drawTube(
       ctx,
-      COLORS.blocks[this.color],
+      palette,
+      palette.blocks[this.color],
       this.x + 2,
       this.y + 2,
       this.w - 4,
@@ -166,7 +174,7 @@ export class Explosion {
     if (this.elapsed >= EXPLOSION_DURATION) this.dead = true;
   }
   // Grows from ×1 to ×EXPLOSION_SCALE around its center while fading out, linearly.
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, palette: ArkanoidPalette) {
     const t = Math.min(1, this.elapsed / EXPLOSION_DURATION);
     const scale = 1 + (EXPLOSION_SCALE - 1) * t;
     const w = this.w * scale;
@@ -175,7 +183,8 @@ export class Explosion {
     ctx.globalAlpha = 1 - t;
     drawTube(
       ctx,
-      COLORS.blocks[this.color],
+      palette,
+      palette.blocks[this.color],
       this.x + (this.w - w) / 2 + 2,
       this.y + (this.h - h) / 2 + 2,
       w - 4,
