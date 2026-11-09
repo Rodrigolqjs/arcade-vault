@@ -15,7 +15,7 @@ export const COLORS = {
   ship: "#00f5ff", // --cyan
   asteroid: "#f5ff00", // --yellow
   bullet: "#e6e9ff", // --ink
-  powerUp: "#ff006e", // --magenta
+  powerUp: "#ff4d94", // lighter --magenta: legible on scanlines and in the vignette corners
   thrust: "#ff006e", // --magenta
   particle: "#f5ff00", // --yellow, with fading alpha
 };
