@@ -61,6 +61,7 @@ export const MIN_DROP_INTERVAL = 100; // ms
 export const DROP_STEP = 90; // ms less per level
 export const LINES_PER_LEVEL = 10;
 export const GHOST_ALPHA = 0.2;
+export const GLOW = 12; // shadowBlur on the active piece
 export const GAMEOVER_DELAY = 1; // s
 // Mirrors the tokens in app/globals.css; canvas can't read CSS variables.
 export const PIECE_COLORS: readonly (string | null)[] = [

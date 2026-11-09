@@ -1,5 +1,4 @@
 import {
-  COLORS,
   GAMEOVER_DELAY,
   H,
   POINTS,
@@ -17,6 +16,8 @@ import {
   dist,
   rand,
 } from "@/lib/games/asteroids/entities";
+import { type AsteroidsPalette, SKINS } from "@/lib/games/asteroids/skins";
+import { DEFAULT_SKIN, type SkinId } from "@/lib/games/skins";
 export interface HudState {
   score: number;
   lives: number;
@@ -26,17 +27,22 @@ export interface AsteroidsEvents {
   onHud: (hud: HudState) => void; // only when a value changes, not every frame
   onGameOver: (score: number) => void; // GAMEOVER_DELAY after losing the last life
 }
+export interface AsteroidsOptions {
+  skin?: SkinId; // DEFAULT_SKIN when omitted
+}
 export interface AsteroidsGame {
   start: () => void;
   pause: () => void;
   resume: () => void;
   end: () => number;
   destroy: () => void;
+  setSkin: (id: SkinId) => void; // swaps the palette; repaints if the loop is stopped
 }
 type EngineState = "ready" | "playing" | "dead" | "gameover";
 export function createAsteroidsGame(
   canvas: HTMLCanvasElement,
   events: AsteroidsEvents,
+  options: AsteroidsOptions = {},
 ): AsteroidsGame {
   const ctx = canvas.getContext("2d")!;
   // Logical 800×600; the backing store scales with the screen density.
@@ -83,6 +89,8 @@ export function createAsteroidsGame(
   let lastHud = "";
   let raf: number | null = null;
   let lastTime: number | null = null;
+  // Visual only: update() and collisions never read the palette.
+  let palette: AsteroidsPalette = SKINS[options.skin ?? DEFAULT_SKIN];
   const emitHud = () => {
     const key = `${score}|${lives}|${level}`;
     if (key === lastHud) return;
@@ -214,16 +222,16 @@ export function createAsteroidsGame(
   }
   // ── Draw ──
   function draw() {
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = palette.bg;
     ctx.fillRect(0, 0, W, H);
-    particles.forEach((p) => p.draw(ctx));
-    asteroids.forEach((a) => a.draw(ctx));
-    powerUps.forEach((p) => p.draw(ctx));
-    bullets.forEach((b) => b.draw(ctx));
-    ship.draw(ctx);
+    particles.forEach((p) => p.draw(ctx, palette));
+    asteroids.forEach((a) => a.draw(ctx, palette));
+    powerUps.forEach((p) => p.draw(ctx, palette));
+    bullets.forEach((b) => b.draw(ctx, palette));
+    ship.draw(ctx, palette);
     // Score, lives and level live in the platform HUD; only 3x stays here.
     if (ship.tripleShot > 0) {
-      ctx.fillStyle = COLORS.powerUp;
+      ctx.fillStyle = palette.powerUp;
       ctx.font = "15px monospace";
       ctx.textAlign = "left";
       ctx.textBaseline = "alphabetic";
@@ -275,6 +283,11 @@ export function createAsteroidsGame(
       state = "gameover";
       finished = true;
       return score;
+    },
+    setSkin(id) {
+      palette = SKINS[id];
+      // Frozen frame (ready, paused, game over): show the new skin right away.
+      if (raf === null) draw();
     },
     destroy() {
       stopLoop();

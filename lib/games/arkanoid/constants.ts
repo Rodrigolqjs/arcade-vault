@@ -21,6 +21,7 @@ export const START_LIVES = 3;
 export const EXPLOSION_DURATION = 150; // ms
 export const EXPLOSION_SCALE = 1.4; // final size of the explosion
 export const GAMEOVER_DELAY = 1; // s
+export const GLOW = { paddle: 16, ball: 14 }; // shadowBlur; blocks have none
 // Copies of the tokens in app/globals.css; the canvas can't read CSS variables.
 export const COLORS = {
   paddle: "#00f5ff", // --cyan, bloque-buster's catalog color

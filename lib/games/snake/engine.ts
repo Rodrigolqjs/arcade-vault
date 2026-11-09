@@ -1,7 +1,6 @@
 import {
   BASE_TICK,
   CELL,
-  COLORS,
   COLS,
   CORE_POINTS,
   CORES_PER_LEVEL,
@@ -25,6 +24,8 @@ import {
   randomFreeCell,
   step,
 } from "@/lib/games/snake/entities";
+import { SKINS, type SnakePalette } from "@/lib/games/snake/skins";
+import { DEFAULT_SKIN, type SkinId } from "@/lib/games/skins";
 export interface HudState {
   score: number;
   lives: number; // 1 while playing, 0 once dead
@@ -34,18 +35,20 @@ export interface SnakeEvents {
   onHud: (hud: HudState) => void; // only when a value changes, not every frame
   onGameOver: (score: number) => void; // GAMEOVER_DELAY after a crash or a full board
 }
+export interface SnakeOptions {
+  skin?: SkinId; // DEFAULT_SKIN when omitted
+}
 export interface SnakeGame {
   start: () => void;
   pause: () => void;
   resume: () => void;
   end: () => number;
   destroy: () => void;
+  setSkin: (id: SkinId) => void; // swaps the palette; repaints if the loop is stopped
 }
 // dying: snake frozen and blinking for GAMEOVER_DELAY, no input.
 type EngineState = "ready" | "playing" | "dying" | "gameover";
-const GLOW = 12;
 const BODY_INSET = 3; // px each side, so the trail reads as a tube
-const TRAIL_FADE = 0.65; // tail alpha = 1 − TRAIL_FADE
 const KEY_DIRS: Record<string, Dir> = {
   ArrowUp: "up",
   ArrowDown: "down",
@@ -59,6 +62,7 @@ const KEY_DIRS: Record<string, Dir> = {
 export function createSnakeGame(
   canvas: HTMLCanvasElement,
   events: SnakeEvents,
+  options: SnakeOptions = {},
 ): SnakeGame {
   const ctx = canvas.getContext("2d")!;
   // Logical 800×600; the backing store scales with the screen density.
@@ -68,6 +72,8 @@ export function createSnakeGame(
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   // ── State ──
   let snake: Cell[] = createSnake(); // head first
+  // Visual only: tick(), collisions and scoring never read the palette.
+  let palette: SnakePalette = SKINS[options.skin ?? DEFAULT_SKIN];
   let dir: Dir = START_DIR;
   let queue: Dir[] = [];
   let core: Cell | null = null;
@@ -154,12 +160,12 @@ export function createSnakeGame(
   // ── Draw ──
   function drawGrid() {
     // Dots at the intersections: a node matrix the snake travels, not graph paper.
-    ctx.fillStyle = COLORS.grid;
+    ctx.fillStyle = palette.grid;
     for (let c = 1; c < COLS; c++)
       for (let r = 1; r < ROWS; r++)
         ctx.fillRect(c * CELL - 1, r * CELL - 1, 2, 2);
     // Neon edge without shadowBlur: a wide faint stroke under a thin bright one.
-    ctx.strokeStyle = COLORS.border;
+    ctx.strokeStyle = palette.border;
     ctx.globalAlpha = 0.25;
     ctx.lineWidth = 6;
     ctx.strokeRect(0, 0, W, H);
@@ -172,24 +178,27 @@ export function createSnakeGame(
     // Soft pulse: radius breathes between ~6 and ~8 px.
     const pulse = 0.5 + 0.5 * Math.sin(time / 180);
     const r = CELL / 2 - 3 + pulse * 2;
-    ctx.fillStyle = COLORS.core;
-    ctx.shadowColor = COLORS.core;
-    ctx.shadowBlur = GLOW + pulse * 6;
+    const cx = core.x * CELL + CELL / 2;
+    const cy = core.y * CELL + CELL / 2;
+    ctx.fillStyle = palette.core;
+    ctx.shadowColor = palette.core;
+    ctx.shadowBlur = palette.glow.core + pulse * palette.glow.pulse;
     ctx.beginPath();
-    ctx.arc(
-      core.x * CELL + CELL / 2,
-      core.y * CELL + CELL / 2,
-      r,
-      0,
-      Math.PI * 2,
-    );
+    if (palette.coreShape === "diamond") {
+      // Hard-edged rhombus with the same breathing size.
+      ctx.moveTo(cx, cy - r);
+      ctx.lineTo(cx + r, cy);
+      ctx.lineTo(cx, cy + r);
+      ctx.lineTo(cx - r, cy);
+      ctx.closePath();
+    } else ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
   }
   function drawSnake() {
     // While dying the whole snake blinks magenta every 100 ms.
     const blink = state === "dying" && Math.floor(time / 100) % 2 === 0;
-    const body = blink ? COLORS.core : COLORS.snake;
+    const body = blink ? palette.core : palette.snake;
     // A continuous light trail: each segment is drawn once, plus a bridge over
     // the gap to the segment ahead, fading from the head to the tail. No glow.
     ctx.fillStyle = body;
@@ -198,7 +207,7 @@ export function createSnakeGame(
     for (let i = last; i > 0; i--) {
       const a = snake[i];
       const b = snake[i - 1];
-      ctx.globalAlpha = 1 - TRAIL_FADE * (i / last);
+      ctx.globalAlpha = 1 - palette.trailFade * (i / last);
       ctx.fillRect(
         a.x * CELL + BODY_INSET,
         a.y * CELL + BODY_INSET,
@@ -222,12 +231,12 @@ export function createSnakeGame(
     }
     ctx.globalAlpha = 1;
     ctx.shadowColor = body;
-    ctx.shadowBlur = GLOW;
-    drawCell(ctx, snake[0], blink ? COLORS.core : COLORS.head, 1);
+    ctx.shadowBlur = palette.glow.head;
+    drawCell(ctx, snake[0], blink ? palette.core : palette.head, 1);
     ctx.shadowBlur = 0;
   }
   function draw() {
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = palette.bg;
     ctx.fillRect(0, 0, W, H);
     drawGrid();
     drawCore();
@@ -285,6 +294,11 @@ export function createSnakeGame(
       stopLoop();
       state = "gameover";
       return score;
+    },
+    setSkin(id) {
+      palette = SKINS[id];
+      // Frozen frame (ready, paused, game over): show the new skin right away.
+      if (raf === null) draw();
     },
     destroy() {
       stopLoop();

@@ -3,7 +3,6 @@ import {
   BLOCK,
   BOARD_X,
   BOARD_Y,
-  COLORS,
   COLS,
   DROP_STEP,
   GAMEOVER_DELAY,
@@ -16,7 +15,6 @@ import {
   MIN_DROP_INTERVAL,
   NEXT_X,
   NEXT_Y,
-  PIECE_COLORS,
   ROWS,
   SOFT_DROP_POINTS,
   W,
@@ -31,6 +29,8 @@ import {
   randomPiece,
   rotateCW,
 } from "@/lib/games/tetris/entities";
+import { SKINS, type TetrisPalette } from "@/lib/games/tetris/skins";
+import { DEFAULT_SKIN, type SkinId } from "@/lib/games/skins";
 export interface HudState {
   score: number;
   lines: number;
@@ -40,21 +40,25 @@ export interface TetrisEvents {
   onHud: (hud: HudState) => void; // only when a value changes, not every frame
   onGameOver: (score: number) => void; // GAMEOVER_DELAY after the new piece collides on spawn
 }
+export interface TetrisOptions {
+  skin?: SkinId; // DEFAULT_SKIN when omitted
+}
 export interface TetrisGame {
   start: () => void;
   pause: () => void;
   resume: () => void;
   end: () => number;
   destroy: () => void;
+  setSkin: (id: SkinId) => void; // swaps the palette; repaints if the loop is stopped
 }
 // dying: board frozen and dimmed for GAMEOVER_DELAY, no input.
 type EngineState = "ready" | "playing" | "dying" | "gameover";
-const GLOW = 12;
 // Literal family name, as in app/globals.css (--pixel).
 const LABEL_FONT = '10px "Press Start 2P", monospace';
 export function createTetrisGame(
   canvas: HTMLCanvasElement,
   events: TetrisEvents,
+  options: TetrisOptions = {},
 ): TetrisGame {
   const ctx = canvas.getContext("2d")!;
   // Logical 800×600; the backing store scales with the screen density.
@@ -78,6 +82,8 @@ export function createTetrisGame(
   let lastTime: number | null = null;
   let spaceHeld = false;
   let spaceLocked = false; // the Space press that started the game
+  // Visual only: update(), collide() and scoring never read the palette.
+  let palette: TetrisPalette = SKINS[options.skin ?? DEFAULT_SKIN];
   const emitHud = () => {
     const key = `${score}|${lines}|${level}`;
     if (key === lastHud) return;
@@ -207,9 +213,9 @@ export function createTetrisGame(
     const w = COLS * BLOCK;
     const h = ROWS * BLOCK;
     // Faint tint so the well reads as a lit tube, not a box on black.
-    ctx.fillStyle = COLORS.wellFill;
+    ctx.fillStyle = palette.wellFill;
     ctx.fillRect(BOARD_X, BOARD_Y, w, h);
-    ctx.strokeStyle = COLORS.grid;
+    ctx.strokeStyle = palette.grid;
     ctx.lineWidth = 0.5;
     ctx.beginPath();
     for (let c = 1; c < COLS; c++) {
@@ -222,7 +228,7 @@ export function createTetrisGame(
     }
     ctx.stroke();
     // Neon edge without shadowBlur: a wide faint stroke under a thin bright one.
-    ctx.strokeStyle = COLORS.well;
+    ctx.strokeStyle = palette.well;
     ctx.globalAlpha = 0.25;
     ctx.lineWidth = 4;
     ctx.strokeRect(BOARD_X - 2, BOARD_Y - 2, w + 4, h + 4);
@@ -235,6 +241,7 @@ export function createTetrisGame(
       for (let c = 0; c < piece.shape[r].length; c++)
         drawBlock(
           ctx,
+          palette,
           BOARD_X + (piece.x + c) * BLOCK,
           BOARD_Y + (y + r) * BLOCK,
           piece.shape[r][c],
@@ -242,7 +249,7 @@ export function createTetrisGame(
         );
   }
   function drawNext() {
-    ctx.fillStyle = COLORS.label;
+    ctx.fillStyle = palette.label;
     ctx.font = LABEL_FONT;
     ctx.textAlign = "left";
     ctx.textBaseline = "bottom";
@@ -250,7 +257,7 @@ export function createTetrisGame(
     // Corner brackets instead of a closed box, so it doesn't compete with the well.
     const box = 4 * BLOCK;
     const arm = 12;
-    ctx.strokeStyle = COLORS.well;
+    ctx.strokeStyle = palette.well;
     ctx.globalAlpha = 0.6;
     ctx.lineWidth = 1.5;
     ctx.beginPath();
@@ -272,26 +279,38 @@ export function createTetrisGame(
     const offY = NEXT_Y + (box - shape.length * BLOCK) / 2;
     for (let r = 0; r < shape.length; r++)
       for (let c = 0; c < shape[r].length; c++)
-        drawBlock(ctx, offX + c * BLOCK, offY + r * BLOCK, shape[r][c]);
+        drawBlock(
+          ctx,
+          palette,
+          offX + c * BLOCK,
+          offY + r * BLOCK,
+          shape[r][c],
+        );
   }
   function draw() {
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = palette.bg;
     ctx.fillRect(0, 0, W, H);
     drawWell();
     for (let r = 0; r < ROWS; r++)
       for (let c = 0; c < COLS; c++)
-        drawBlock(ctx, BOARD_X + c * BLOCK, BOARD_Y + r * BLOCK, board[r][c]);
+        drawBlock(
+          ctx,
+          palette,
+          BOARD_X + c * BLOCK,
+          BOARD_Y + r * BLOCK,
+          board[r][c],
+        );
     if (current) {
       drawPiece(current, ghostY(current), GHOST_ALPHA);
       // Glow only on the active piece.
-      ctx.shadowColor = PIECE_COLORS[current.type] ?? "transparent";
-      ctx.shadowBlur = GLOW;
+      ctx.shadowColor = palette.pieces[current.type] ?? "transparent";
+      ctx.shadowBlur = palette.glow;
       drawPiece(current, current.y, 1);
       ctx.shadowBlur = 0;
     }
     drawNext();
     if (state === "dying" || state === "gameover") {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
+      ctx.fillStyle = palette.dim;
       ctx.fillRect(0, 0, W, H);
     }
   }
@@ -349,6 +368,11 @@ export function createTetrisGame(
       stopLoop();
       state = "gameover";
       return score;
+    },
+    setSkin(id) {
+      palette = SKINS[id];
+      // Frozen frame (ready, paused, game over): show the new skin right away.
+      if (raf === null) draw();
     },
     destroy() {
       destroyed = true;

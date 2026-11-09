@@ -1,6 +1,4 @@
 import {
-  COLORS,
-  GLOW,
   H,
   POWERUP_TTL,
   RADII,
@@ -8,10 +6,13 @@ import {
   TRIPLE_SPREAD,
   W,
 } from "@/lib/games/asteroids/constants";
+import type { AsteroidsPalette } from "@/lib/games/asteroids/skins";
 export type Keys = Record<string, boolean>;
 export const wrap = (v: number, max: number) => ((v % max) + max) % max;
-export const dist = (a: { x: number; y: number }, b: { x: number; y: number }) =>
-  Math.hypot(a.x - b.x, a.y - b.y);
+export const dist = (
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+) => Math.hypot(a.x - b.x, a.y - b.y);
 export const rand = (min: number, max: number) =>
   min + Math.random() * (max - min);
 const randInt = (min: number, max: number) => Math.floor(rand(min, max + 1));
@@ -36,11 +37,21 @@ export class Bullet {
     this.ttl -= dt;
     if (this.ttl <= 0) this.dead = true;
   }
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = COLORS.bullet;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fill();
+  draw(ctx: CanvasRenderingContext2D, p: AsteroidsPalette) {
+    ctx.save();
+    ctx.fillStyle = p.bullet;
+    ctx.shadowColor = p.bullet;
+    ctx.shadowBlur = p.glow.bullet;
+    if (p.edges === "hard") {
+      // Same 4 px width as the circle; collision still uses dist().
+      const s = this.radius * 2;
+      ctx.fillRect(this.x - this.radius, this.y - this.radius, s, s);
+    } else {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
   }
 }
 export class Asteroid {
@@ -85,15 +96,15 @@ export class Asteroid {
       new Asteroid(this.x, this.y, this.size - 1),
     ];
   }
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, p: AsteroidsPalette) {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rot);
-    ctx.strokeStyle = COLORS.asteroid;
-    ctx.shadowColor = COLORS.asteroid;
-    ctx.shadowBlur = GLOW;
+    ctx.strokeStyle = p.asteroid;
+    ctx.shadowColor = p.asteroid;
+    ctx.shadowBlur = p.glow.asteroid;
     ctx.lineWidth = 1.5;
-    ctx.lineJoin = "round";
+    ctx.lineJoin = p.edges === "hard" ? "miter" : "round";
     ctx.beginPath();
     ctx.moveTo(this.verts[0][0], this.verts[0][1]);
     for (let i = 1; i < this.verts.length; i++)
@@ -125,22 +136,22 @@ export class PowerUp {
     this.ttl -= dt;
     if (this.ttl <= 0) this.dead = true;
   }
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, p: AsteroidsPalette) {
     // Blinks during its last 2 seconds.
     if (this.ttl < 2 && Math.floor(this.ttl * 8) % 2 === 0) return;
     const pulse = 0.85 + Math.sin(performance.now() / 150) * 0.15;
     const r = this.radius * pulse;
     ctx.save();
-    ctx.shadowColor = COLORS.powerUp;
-    ctx.shadowBlur = GLOW;
+    ctx.shadowColor = p.powerUp;
+    ctx.shadowBlur = p.glow.powerUp;
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(Math.PI / 4);
-    ctx.strokeStyle = COLORS.powerUp;
+    ctx.strokeStyle = p.powerUp;
     ctx.lineWidth = 2;
     ctx.strokeRect(-r, -r, r * 2, r * 2);
     ctx.restore();
-    ctx.fillStyle = COLORS.powerUp;
+    ctx.fillStyle = p.powerUp;
     ctx.font = "bold 12px monospace";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -206,7 +217,7 @@ export class Ship {
     }
     return [new Bullet(ox, oy, this.angle)];
   }
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, p: AsteroidsPalette) {
     if (this.dead) return;
     // Blinks while respawn invincibility lasts.
     if (this.invincible > 0 && Math.floor(this.invincible * 8) % 2 === 0)
@@ -214,11 +225,11 @@ export class Ship {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.angle);
-    ctx.strokeStyle = COLORS.ship;
-    ctx.shadowColor = COLORS.ship;
-    ctx.shadowBlur = GLOW;
+    ctx.strokeStyle = p.ship;
+    ctx.shadowColor = p.ship;
+    ctx.shadowBlur = p.glow.ship;
     ctx.lineWidth = 1.5;
-    ctx.lineJoin = "round";
+    ctx.lineJoin = p.edges === "hard" ? "miter" : "round";
     // Classic silhouette: triangle with a rear notch.
     ctx.beginPath();
     ctx.moveTo(20, 0);
@@ -232,8 +243,8 @@ export class Ship {
       ctx.moveTo(-8, -4);
       ctx.lineTo(-8 - rand(6, 14), 0);
       ctx.lineTo(-8, 4);
-      ctx.strokeStyle = COLORS.thrust;
-      ctx.shadowColor = COLORS.thrust;
+      ctx.strokeStyle = p.thrust;
+      ctx.shadowColor = p.thrust;
       ctx.globalAlpha = 0.85;
       ctx.stroke();
     }
@@ -264,10 +275,10 @@ export class Particle {
     this.ttl -= dt;
     if (this.ttl <= 0) this.dead = true;
   }
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, p: AsteroidsPalette) {
     ctx.save();
     ctx.globalAlpha = Math.max(0, this.ttl / this.life);
-    ctx.strokeStyle = COLORS.particle;
+    ctx.strokeStyle = p.particle;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);

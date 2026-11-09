@@ -15,6 +15,8 @@ import {
   collideAABB,
 } from "@/lib/games/arkanoid/entities";
 import { LEVELS } from "@/lib/games/arkanoid/levels";
+import { type ArkanoidPalette, SKINS } from "@/lib/games/arkanoid/skins";
+import { DEFAULT_SKIN, type SkinId } from "@/lib/games/skins";
 export interface HudState {
   score: number;
   lives: number;
@@ -24,12 +26,16 @@ export interface ArkanoidEvents {
   onHud: (hud: HudState) => void; // only when a value changes, not every frame
   onGameOver: (score: number) => void; // GAMEOVER_DELAY after the last life or clearing level 5
 }
+export interface ArkanoidOptions {
+  skin?: SkinId; // DEFAULT_SKIN when omitted
+}
 export interface ArkanoidGame {
   start: () => void; // score 0, 3 lives, level 1, centered paddle, ball launched; clears held keys
   pause: () => void; // stops the rAF
   resume: () => void; // resumes without a dt jump
   end: () => number; // stops the game (FIN button) and returns the score
   destroy: () => void; // cancels the rAF and removes the listeners
+  setSkin: (id: SkinId) => void; // swaps the palette; repaints if the loop is stopped
 }
 // dying: board frozen and dimmed for GAMEOVER_DELAY, no input. Entered after
 // losing the last life or clearing level 5.
@@ -37,6 +43,7 @@ type EngineState = "ready" | "playing" | "dying" | "gameover";
 export function createArkanoidGame(
   canvas: HTMLCanvasElement,
   events: ArkanoidEvents,
+  options: ArkanoidOptions = {},
 ): ArkanoidGame {
   const ctx = canvas.getContext("2d")!;
   // Logical 800×600; the backing store scales with the screen density.
@@ -58,6 +65,8 @@ export function createArkanoidGame(
   let lastHud = "";
   let raf: number | null = null;
   let lastTime: number | null = null;
+  // Visual only: update(), collisions and scoring never read the palette.
+  let palette: ArkanoidPalette = SKINS[options.skin ?? DEFAULT_SKIN];
   const emitHud = () => {
     const key = `${score}|${lives}|${level}`;
     if (key === lastHud) return;
@@ -160,14 +169,14 @@ export function createArkanoidGame(
   }
   // ── Draw ──
   function draw() {
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = palette.bg;
     ctx.fillRect(0, 0, W, H);
-    for (const block of blocks) if (block.alive) block.draw(ctx);
-    for (const exp of explosions) exp.draw(ctx);
-    paddle.draw(ctx);
-    ball.draw(ctx);
+    for (const block of blocks) if (block.alive) block.draw(ctx, palette);
+    for (const exp of explosions) exp.draw(ctx, palette);
+    paddle.draw(ctx, palette);
+    ball.draw(ctx, palette);
     if (state === "dying" || state === "gameover") {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
+      ctx.fillStyle = palette.dim;
       ctx.fillRect(0, 0, W, H);
     }
   }
@@ -217,6 +226,11 @@ export function createArkanoidGame(
       stopLoop();
       state = "gameover";
       return score;
+    },
+    setSkin(id) {
+      palette = SKINS[id];
+      // Frozen frame (ready, paused, game over): show the new skin right away.
+      if (raf === null) draw();
     },
     destroy() {
       stopLoop();

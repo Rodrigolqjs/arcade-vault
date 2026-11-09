@@ -14,6 +14,9 @@ export const CORES_PER_LEVEL = 5;
 export const CORE_POINTS = 10; // × level
 export const MAX_QUEUED_TURNS = 2;
 export const GAMEOVER_DELAY = 1; // s
+export const GLOW = 12; // shadowBlur on the head and the core
+export const CORE_PULSE_GLOW = 6; // extra core blur at the peak of its pulse
+export const TRAIL_FADE = 0.65; // tail alpha = 1 − TRAIL_FADE
 // Copies of the app/globals.css tokens; the canvas can't read CSS variables.
 export const COLORS = {
   snake: "#00ff88", // --green, serpentina's catalog color

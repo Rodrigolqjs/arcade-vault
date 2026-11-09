@@ -1,4 +1,5 @@
-import { BLOCK, COLS, PIECES, PIECE_COLORS, ROWS } from "./constants";
+import { BLOCK, COLS, PIECES, ROWS } from "./constants";
+import type { TetrisPalette } from "./skins";
 // ROWS × COLS; 0 = empty, 1–8 = color index.
 export type Board = number[][];
 export interface Piece {
@@ -65,17 +66,28 @@ export function clearFullRows(board: Board): number {
 // One cell at pixel (px, py) with the original's 4 px top highlight.
 export function drawBlock(
   ctx: CanvasRenderingContext2D,
+  palette: TetrisPalette,
   px: number,
   py: number,
   colorIndex: number,
   alpha = 1,
 ): void {
-  const color = PIECE_COLORS[colorIndex];
+  const color = palette.pieces[colorIndex];
   if (!color) return;
   ctx.globalAlpha = alpha;
   ctx.fillStyle = color;
   ctx.fillRect(px + 1, py + 1, BLOCK - 2, BLOCK - 2);
-  ctx.fillStyle = "rgba(255,255,255,0.12)";
-  ctx.fillRect(px + 1, py + 1, BLOCK - 2, 4);
+  if (palette.highlight) {
+    ctx.fillStyle = palette.highlight;
+    ctx.fillRect(px + 1, py + 1, BLOCK - 2, 4);
+  }
+  // Pattern for pieces that share a tone; same cell size, no glow on the hole.
+  if (palette.marks[colorIndex] === "core") {
+    const blur = ctx.shadowBlur;
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = palette.bg;
+    ctx.fillRect(px + 9, py + 9, BLOCK - 18, BLOCK - 18);
+    ctx.shadowBlur = blur;
+  }
   ctx.globalAlpha = 1;
 }
