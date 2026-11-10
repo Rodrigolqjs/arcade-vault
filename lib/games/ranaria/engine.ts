@@ -1,6 +1,5 @@
 import {
   CELL,
-  COLORS,
   DEATH_BLINK,
   DEATH_DELAY,
   GAMEOVER_DELAY,
@@ -33,6 +32,8 @@ import {
   moveLane,
   startFrog,
 } from "@/lib/games/ranaria/entities";
+import { type RanariaPalette, SKINS } from "@/lib/games/ranaria/skins";
+import { DEFAULT_SKIN, type SkinId } from "@/lib/games/skins";
 export interface HudState {
   score: number;
   lives: number; // 3 al empezar, 0 al perder la última
@@ -43,12 +44,16 @@ export interface RanariaEvents {
   onHud: (hud: HudState) => void; // solo cuando cambia algún valor, no cada frame
   onGameOver: (score: number) => void; // GAMEOVER_DELAY después de perder la última vida
 }
+export interface RanariaOptions {
+  skin?: SkinId; // DEFAULT_SKIN when omitted
+}
 export interface RanariaGame {
   start: () => void;
   pause: () => void;
   resume: () => void;
   end: () => number;
   destroy: () => void;
+  setSkin: (id: SkinId) => void; // swaps the palette; repaints if the loop is stopped
   press: (code: string) => void; // touch controls: same path as keydown for that KeyboardEvent.code
   release: (code: string) => void; // touch controls: same path as keyup
 }
@@ -67,6 +72,7 @@ const KEY_HOPS: Record<string, Hop> = {
 export function createRanariaGame(
   canvas: HTMLCanvasElement,
   events: RanariaEvents,
+  options: RanariaOptions = {},
 ): RanariaGame {
   const ctx = canvas.getContext("2d")!;
   // Logical 800×600; the backing store scales with the screen density.
@@ -75,6 +81,8 @@ export function createRanariaGame(
   canvas.height = H * dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   // ── State ──
+  // Visual only: update(), collisions and scoring never read the palette.
+  let palette: RanariaPalette = SKINS[options.skin ?? DEFAULT_SKIN];
   let stretch = generateStretch(1);
   let lanes: Lane[] = stretch.lanes;
   let lilies: number[] = stretch.lilies;
@@ -211,21 +219,22 @@ export function createRanariaGame(
   }
   // ── Draw ──
   function draw() {
-    drawBands(ctx);
-    drawLilies(ctx, lilies);
-    for (const lane of lanes) drawLane(ctx, lane, t);
-    // Dead frog: blinks magenta where it died.
+    drawBands(ctx, palette);
+    drawLilies(ctx, lilies, palette);
+    for (const lane of lanes) drawLane(ctx, lane, t, palette);
+    // Dead frog: blinks in the skin's dead color where it died.
     if (respawnTimer > 0 || state === "dying" || state === "gameover") {
       if (Math.floor(time / DEATH_BLINK) % 2 === 0)
         drawFrog(
           ctx,
           { x: deathX, row: deathRow, hopAnim: 0 },
-          COLORS.dead,
+          palette.dead,
           false,
+          palette,
         );
       return;
     }
-    drawFrog(ctx, frog, COLORS.frog, true);
+    drawFrog(ctx, frog, palette.frog, true, palette);
   }
   // ── Loop ──
   function loop(ts: number) {
@@ -281,6 +290,11 @@ export function createRanariaGame(
     },
     press: (code) => keyDown(code, false),
     release: () => {}, // hops have no keyup logic
+    setSkin(id) {
+      palette = SKINS[id];
+      // Frozen frame (ready, paused, game over): show the new skin right away.
+      if (raf === null) draw();
+    },
     destroy() {
       stopLoop();
       window.removeEventListener("keydown", onKeyDown);

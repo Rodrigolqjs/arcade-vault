@@ -2,6 +2,9 @@
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import GameOverModal from "@/components/GameOverModal";
 import PlayerHud from "@/components/PlayerHud";
+import SkinSelector, {
+  type SkinPreview,
+} from "@/components/games/SkinSelector";
 import TouchControls, {
   type PadButton,
 } from "@/components/games/TouchControls";
@@ -13,7 +16,23 @@ import {
   type RanariaGame,
   createRanariaGame,
 } from "@/lib/games/ranaria/engine";
+import { SKINS } from "@/lib/games/ranaria/skins";
+import { SKIN_IDS, type SkinId, loadSkin, saveSkin } from "@/lib/games/skins";
 type Phase = "ready" | "playing" | "paused" | "over";
+// Mini screen per skin: frog, car and log edge on the road band.
+const SKIN_PREVIEWS = Object.fromEntries(
+  SKIN_IDS.map((id) => {
+    const p = SKINS[id];
+    return [
+      id,
+      {
+        bg: p.road,
+        colors: [p.frog, p.car, p.logEdge],
+        glow: p.glow.frog > 0,
+      },
+    ];
+  }),
+) as Record<SkinId, SkinPreview>;
 // Touch pad: the full cross; each tap is one hop, like a key press.
 const PAD: PadButton[] = [
   { slot: "up", code: "ArrowUp", label: "▲", ariaLabel: "Saltar hacia arriba" },
@@ -58,6 +77,14 @@ export default function RanariaPlayer({ game }: { game: Game }) {
   const [hud, setHud] = useState(START_HUD);
   const [finalScore, setFinalScore] = useState(0);
   const [name, setName] = useState("INVITADO");
+  // Safe in the initializer: RealGamePlayer loads this with ssr: false.
+  const [skin, setSkinState] = useState<SkinId>(() => loadSkin(game.id));
+  const initialSkin = useRef(skin);
+  const changeSkin = (id: SkinId) => {
+    setSkinState(id);
+    saveSkin(game.id, id);
+    engineRef.current?.setSkin(id);
+  };
   const start = () => {
     engineRef.current?.start();
     setPhase("playing");
@@ -96,10 +123,15 @@ export default function RanariaPlayer({ game }: { game: Game }) {
   });
   const onFocusLost = useEffectEvent(() => pause());
   useEffect(() => {
-    const engine = createRanariaGame(canvasRef.current!, {
-      onHud: setHud,
-      onGameOver: (score) => onGameOver(score),
-    });
+    // The engine is created once; later skin changes go through setSkin.
+    const engine = createRanariaGame(
+      canvasRef.current!,
+      {
+        onHud: setHud,
+        onGameOver: (score) => onGameOver(score),
+      },
+      { skin: initialSkin.current },
+    );
     engineRef.current = engine;
     window.addEventListener("keydown", onKeyDown);
     const onVisibility = () => {
@@ -177,6 +209,12 @@ export default function RanariaPlayer({ game }: { game: Game }) {
           onRelease={(code) => engineRef.current?.release(code)}
         />
       )}
+      <SkinSelector
+        value={skin}
+        onChange={changeSkin}
+        previews={SKIN_PREVIEWS}
+        disabled={phase === "playing"}
+      />
       {phase === "over" && (
         <GameOverModal
           gameId={game.id}

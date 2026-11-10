@@ -1,7 +1,7 @@
 # Juegos con skins
 
 > Registro de skin-designer: qué juegos jugables tienen ya sus tres skins (`clasico`, `neon`, `retro`). Se trabaja un juego por vez.
-> Última actualización: 2026-11-09 · caida, serpentina, bloque-buster
+> Última actualización: 2026-11-10 · ranaria
 
 ## Infraestructura común
 
@@ -15,6 +15,7 @@
 | caida         | tetris    | ⚠️      | ✅   | ✅    | implementada | `lib/games/tetris/skins.ts`, `constants.ts`, `entities.ts`, `engine.ts`, `components/games/TetrisPlayer.tsx` | 2026-11-09  |
 | serpentina    | snake     | ⚠️      | ✅   | ✅    | implementada | `lib/games/snake/skins.ts`, `constants.ts`, `engine.ts`, `components/games/SnakePlayer.tsx` | 2026-11-09  |
 | bloque-buster | arkanoid  | ⚠️      | ✅   | ✅    | implementada | `lib/games/arkanoid/skins.ts`, `constants.ts`, `entities.ts`, `engine.ts`, `components/games/ArkanoidPlayer.tsx` | 2026-11-09  |
+| ranaria       | ranaria   | ⚠️      | ✅   | ✅    | implementada | `lib/games/ranaria/skins.ts`, `constants.ts`, `entities.ts`, `engine.ts`, `components/games/RanariaPlayer.tsx` | 2026-11-10  |
 
 ## Detalle por juego
 
@@ -48,6 +49,15 @@ _Se completa la sección de cada juego cuando skin-designer lo trabaja._
 - Hallazgos de contraste (clasico, sin cambiar): bloque magenta `#ff006e`: esquina 1.45 < 1.5 → `#ff4d94`. Pares con luminancia < 0.05: red/magenta (0.023), red/gray (0.037) y cyan/green (0.008). Los bloques no tienen tipos (todos se rompen de un golpe y valen 10 puntos), así que el criterio 4 es informativo: no confunden la jugabilidad.
 - Notas: la bola cuadrada de retro ocupa la misma caja `BALL_SIZE` que ya usaba la colisión AABB. tsc y lint verdes; build pendiente (`next dev` activo). Preview: pala, bola y bloque de la fila roja.
 
+### ranaria
+
+- Paletas: neon = "pantano eléctrico": rana y nenúfar `#39ff14` (glow 20 / 16), coche `#ff2fd0`, furgoneta `#00e5ff`, camión `#ffff00` (glow 8 en vehículos), troncos con borde ámbar `#ffa200` y relleno a 0.18, aviso de hundido y rana muerta `#ff6ae6`, bandas casi negras (carretera `#000000`, río `#00142a`, meta `#000a14`, arcenes `#0a0a14`), líneas cian a 0.3. retro = paleta corta de 4 tonos de noche (lima `#c8f060` rana/nenúfar, salmón `#ff8a80` coche/aviso/muerte, hueso `#f0e8d0` furgoneta/ojos, lavanda `#9484e8` camión/troncos) sobre bandas tintadas de violeta (`#0e0c16`, `#0a0c20`, `#0c0e18`, `#16121e`), sin glow y con `edges: "hard"`: esquinas rectas en rana, vehículos y troncos, nenúfar cuadrado del mismo radio y ojos cuadrados. clasico se deriva de `COLORS` + `GLOW` (`{ frog: 14, lily: 12 }`, movido a `constants.ts`; vehículos sin glow).
+- Fondo: no hay `fillRect` de fondo; las cinco bandas cubren el canvas, así que cada entidad se mide contra la banda sobre la que se mueve (vehículos sobre carretera, troncos y aviso sobre río, nenúfar sobre meta, rana sobre la banda más clara y sobre el relleno del tronco).
+- Hallazgos de contraste (clasico, sin cambiar): coche `#ff006e` sobre carretera: esquina 1.32 < 1.5 → `#ff5ca0` (1.54). Aviso de hundido `#ff006e` (borde de una plataforma que va a desaparecer) sobre río `#002633`: 4.13 / 2.91 / 1.10 < 4.5 / 3 / 1.5 → `#ff8ab8` (7.23 / 4.93 / 1.46) o un río más oscuro. Rana `#00ff88` sobre el relleno del tronco (`#006e7a`): 4.46 / 2.95 / 1.42 < 4.5 / 3 / 1.5 → bajar el relleno del tronco a alfa ~0.25. Relleno del aviso `rgba(255, 0, 110, 0.25)`: 1.11 < 1.2 (decorativo, va con el borde). Rana muerta `#ff006e` sobre río: 4.13 (pasa como efecto ≥ 3).
+- Colores que estaban fuera de `COLORS` y pasaron a la paleta: parabrisas `rgba(10, 10, 24, 0.55)` y relleno del aviso `rgba(255, 0, 110, 0.25)` (ahora en `COLORS`), pupilas (`COLORS.road`, ahora `frogPupil`), `shadowBlur` 12/14 (ahora `GLOW`). `grep` de literales y de `COLORS` en `engine.ts`/`entities.ts`: vacío.
+- Distinción: vehículos por largo (1/2/3 celdas) y además por luminancia en las tres skins; borde del tronco y aviso con diferencia ≥ 0.05 en las tres (neón 0.098, retro 0.124), además del parpadeo.
+- Notas: tsc, lint y build verdes el 2026-11-10 (build con el `next dev` del usuario vivo: Next 16 separa `.next/dev`; el dev siguió respondiendo 200). Preview del selector: rana, coche y borde del tronco sobre la banda de carretera.
+
 ## Preguntas abiertas
 
 - rocas · Selector deshabilitado durante `playing`, habilitado en `ready`, pausa y fin de partida (con repintado inmediato del frame congelado). Alternativa: permitir el cambio en plena partida.
@@ -59,3 +69,6 @@ _Se completa la sección de cada juego cuando skin-designer lo trabaja._
 - serpentina · La cola de clasico se desvanece hasta 2.47:1 aunque sigue siendo letal. ¿Subir el alfa mínimo de la cola (`TRAIL_FADE` 0.35)? ¿Y los puntos de la grilla a alfa 0.35 (hoy 1.14)?
 - serpentina · Retro en fósforo blanco frío con núcleo en rombo, para dar a cada juego su propio retro (rocas ámbar, caida verde). Alternativa: un único retro común a todos.
 - bloque-buster · Retro con 4 tonos repartidos entre 7 colores de bloque y bola cuadrada. Alternativa: bola redonda también en retro.
+- ranaria · Retro con 4 tonos y bordes duros (nenúfar y ojos cuadrados). Alternativa: mantener el nenúfar redondo, que es la meta y se reconoce por la forma.
+- ranaria · En clásico, ¿aplicar coche `#ff5ca0`, aviso `#ff8ab8` y relleno de tronco a 0.25 para pasar los umbrales de esquina y de rana sobre tronco?
+- ranaria · El preview usa la banda de carretera como fondo (el motor no tiene un `bg` único). Alternativa: usar el río.

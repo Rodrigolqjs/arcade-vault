@@ -1,6 +1,5 @@
 import {
   CELL,
-  COLORS,
   FROG_INSET,
   FROG_SIZE,
   HOP_ANIM,
@@ -39,6 +38,7 @@ import {
   VEHICLE_LENGTHS,
   W,
 } from "@/lib/games/ranaria/constants";
+import type { RanariaPalette } from "@/lib/games/ranaria/skins";
 export type LaneKind = "road" | "river";
 export type LogState = "float" | "warn" | "under";
 export type Hop = "up" | "down" | "left" | "right";
@@ -195,22 +195,23 @@ function roundRect(
   w: number,
   h: number,
   r: number,
+  pal: RanariaPalette,
 ) {
   ctx.beginPath();
-  ctx.roundRect(x, y, w, h, r);
+  ctx.roundRect(x, y, w, h, pal.edges === "hard" ? 0 : r);
 }
-export function drawBands(ctx: CanvasRenderingContext2D) {
+export function drawBands(ctx: CanvasRenderingContext2D, pal: RanariaPalette) {
   const band = (row: number, rows: number, color: string) => {
     ctx.fillStyle = color;
     ctx.fillRect(0, row * CELL, W, rows * CELL);
   };
-  band(ROW_GOAL, 1, COLORS.goal);
-  band(RIVER_ROWS[0], RIVER_ROWS.length, COLORS.river);
-  band(ROW_MEDIAN, 1, COLORS.bank);
-  band(ROAD_ROWS[0], ROAD_ROWS.length, COLORS.road);
-  band(ROW_START, 1, COLORS.bank);
+  band(ROW_GOAL, 1, pal.goal);
+  band(RIVER_ROWS[0], RIVER_ROWS.length, pal.river);
+  band(ROW_MEDIAN, 1, pal.bank);
+  band(ROAD_ROWS[0], ROAD_ROWS.length, pal.road);
+  band(ROW_START, 1, pal.bank);
   // Dashed lines between road lanes.
-  ctx.strokeStyle = COLORS.laneLine;
+  ctx.strokeStyle = pal.laneLine;
   ctx.lineWidth = 2;
   ctx.setLineDash([18, 18]);
   ctx.beginPath();
@@ -231,26 +232,28 @@ export function drawBands(ctx: CanvasRenderingContext2D) {
   ctx.stroke();
   ctx.globalAlpha = 1;
 }
-const VEHICLE_COLORS: Record<number, string> = {
-  1: COLORS.car,
-  2: COLORS.van,
-  3: COLORS.truck,
-};
+const vehicleColor = (len: number, pal: RanariaPalette) =>
+  len === 3 ? pal.truck : len === 2 ? pal.van : pal.car;
 function drawVehicle(
   ctx: CanvasRenderingContext2D,
   m: Mover,
   y: number,
   dir: number,
+  pal: RanariaPalette,
 ) {
   const w = m.len * CELL - 8;
   const x = m.x + 4;
   const top = y + 9;
   const h = CELL - 18;
-  ctx.fillStyle = VEHICLE_COLORS[m.len] ?? COLORS.car;
-  roundRect(ctx, x, top, w, h, 6);
+  const color = vehicleColor(m.len, pal);
+  ctx.fillStyle = color;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = pal.glow.vehicle;
+  roundRect(ctx, x, top, w, h, 6, pal);
   ctx.fill();
+  ctx.shadowBlur = 0;
   // Dark windscreen on the leading side, so the direction reads at a glance.
-  ctx.fillStyle = "rgba(10, 10, 24, 0.55)";
+  ctx.fillStyle = pal.windscreen;
   const ws = 8;
   const wx = dir > 0 ? x + w - ws - 6 : x + 6;
   ctx.fillRect(wx, top + 5, ws, h - 10);
@@ -261,6 +264,7 @@ function drawLog(
   y: number,
   state: LogState,
   p: number,
+  pal: RanariaPalette,
 ) {
   const x = m.x + 3;
   const w = m.len * CELL - 6;
@@ -269,17 +273,17 @@ function drawLog(
   ctx.lineWidth = 2;
   if (state === "under") {
     // Only a faint outline where the log will come back up.
-    ctx.strokeStyle = COLORS.logUnder;
-    roundRect(ctx, x, top, w, h, 10);
+    ctx.strokeStyle = pal.logUnder;
+    roundRect(ctx, x, top, w, h, 10, pal);
     ctx.stroke();
     return;
   }
   // Warning: alternates every SINK_BLINK between normal and a magenta edge.
   const alt =
     state === "warn" && Math.floor((p - SINK_FLOAT) / SINK_BLINK) % 2 === 0;
-  ctx.fillStyle = alt ? "rgba(255, 0, 110, 0.25)" : COLORS.log;
-  ctx.strokeStyle = alt ? COLORS.logWarn : COLORS.logEdge;
-  roundRect(ctx, x, top, w, h, 10);
+  ctx.fillStyle = alt ? pal.logWarnFill : pal.log;
+  ctx.strokeStyle = alt ? pal.logWarn : pal.logEdge;
+  roundRect(ctx, x, top, w, h, 10, pal);
   ctx.fill();
   ctx.stroke();
   // Grain: one line per cell, so long logs read longer.
@@ -292,11 +296,16 @@ function drawLog(
   ctx.stroke();
   ctx.globalAlpha = 1;
 }
-export function drawLane(ctx: CanvasRenderingContext2D, lane: Lane, t: number) {
+export function drawLane(
+  ctx: CanvasRenderingContext2D,
+  lane: Lane,
+  t: number,
+  pal: RanariaPalette,
+) {
   const y = lane.row * CELL;
   for (const m of lane.movers) {
     if (m.x >= W || m.x + m.len * CELL <= 0) continue;
-    if (lane.kind === "road") drawVehicle(ctx, m, y, lane.speed);
+    if (lane.kind === "road") drawVehicle(ctx, m, y, lane.speed, pal);
     else
       drawLog(
         ctx,
@@ -304,17 +313,31 @@ export function drawLane(ctx: CanvasRenderingContext2D, lane: Lane, t: number) {
         y,
         logState(m, lane, t),
         lane.sinking ? (t + m.phase) % SINK_CYCLE : 0,
+        pal,
       );
   }
 }
-export function drawLilies(ctx: CanvasRenderingContext2D, lilies: number[]) {
-  ctx.strokeStyle = COLORS.lily;
+export function drawLilies(
+  ctx: CanvasRenderingContext2D,
+  lilies: number[],
+  pal: RanariaPalette,
+) {
+  ctx.strokeStyle = pal.lily;
   ctx.lineWidth = 4;
-  ctx.shadowColor = COLORS.lily;
-  ctx.shadowBlur = 12;
+  ctx.shadowColor = pal.lily;
+  ctx.shadowBlur = pal.glow.lily;
   for (const col of lilies) {
+    const cx = col * CELL + CELL / 2;
     ctx.beginPath();
-    ctx.arc(col * CELL + CELL / 2, CELL / 2, LILY_RADIUS, 0, Math.PI * 2);
+    // Hard edges: a square of the same radius; LILY_CATCH is unchanged.
+    if (pal.edges === "hard")
+      ctx.rect(
+        cx - LILY_RADIUS,
+        CELL / 2 - LILY_RADIUS,
+        LILY_RADIUS * 2,
+        LILY_RADIUS * 2,
+      );
+    else ctx.arc(cx, CELL / 2, LILY_RADIUS, 0, Math.PI * 2);
     ctx.stroke();
   }
   ctx.shadowBlur = 0;
@@ -324,6 +347,7 @@ export function drawFrog(
   frog: Frog,
   color: string,
   eyes: boolean,
+  pal: RanariaPalette,
 ) {
   // A quick squash-and-stretch while hopping (visual only).
   const s = 1 + 0.18 * (frog.hopAnim / HOP_ANIM);
@@ -332,23 +356,22 @@ export function drawFrog(
   const cy = frog.row * CELL + CELL / 2;
   ctx.fillStyle = color;
   ctx.shadowColor = color;
-  ctx.shadowBlur = 14;
-  roundRect(ctx, cx - size / 2, cy - size / 2, size, size, size * 0.42);
+  ctx.shadowBlur = pal.glow.frog;
+  roundRect(ctx, cx - size / 2, cy - size / 2, size, size, size * 0.42, pal);
   ctx.fill();
   ctx.shadowBlur = 0;
   if (!eyes) return;
-  ctx.fillStyle = COLORS.frogEyes;
-  for (const dx of [-8, 8]) {
+  // Round eyes, or squares of the same radius with hard edges.
+  const dot = (x: number, y: number, r: number) => {
     ctx.beginPath();
-    ctx.arc(cx + dx * s, cy - 8 * s, 4.5 * s, 0, Math.PI * 2);
+    if (pal.edges === "hard") ctx.rect(x - r, y - r, r * 2, r * 2);
+    else ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
-  }
-  ctx.fillStyle = COLORS.road;
-  for (const dx of [-8, 8]) {
-    ctx.beginPath();
-    ctx.arc(cx + dx * s, cy - 9 * s, 2 * s, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  };
+  ctx.fillStyle = pal.frogEyes;
+  for (const dx of [-8, 8]) dot(cx + dx * s, cy - 8 * s, 4.5 * s);
+  ctx.fillStyle = pal.frogPupil;
+  for (const dx of [-8, 8]) dot(cx + dx * s, cy - 9 * s, 2 * s);
 }
 export const startFrog = (): Frog => ({
   x: START_COL * CELL,

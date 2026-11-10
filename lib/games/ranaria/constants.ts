@@ -69,6 +69,7 @@ export const COLORS = {
   log: "rgba(0, 245, 255, 0.35)", // --cyan al 35 %
   logEdge: "#00f5ff", // --cyan
   logWarn: "#ff006e", // --magenta
+  logWarnFill: "rgba(255, 0, 110, 0.25)", // --magenta al 25 %, relleno del aviso
   logUnder: "rgba(74, 79, 112, 0.4)", // --ink-faint al 40 %
   dead: "#ff006e", // --magenta
   goal: "#001f2a",
@@ -76,4 +77,7 @@ export const COLORS = {
   bank: "#15151f", // --bg-3, arcén y orilla
   road: "#0f0f18", // --bg-2
   laneLine: "rgba(230, 233, 255, 0.35)", // --ink al 35 %
+  windscreen: "rgba(10, 10, 24, 0.55)", // parabrisas, marca la dirección
 };
+// shadowBlur de las entidades con halo (el resto, 0).
+export const GLOW = { frog: 14, lily: 12 };
