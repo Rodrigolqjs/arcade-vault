@@ -857,21 +857,64 @@
     font-size: 22px;
     text-shadow: 0 0 8px var(--yellow);
   }
+  /* RANARIA: tablero en bandas (meta, río, arcén, carretera, orilla) */
   .cover-rana {
-    background: linear-gradient(180deg, #001f2a, #0a0a18);
+    background:
+      repeating-linear-gradient(
+          90deg,
+          rgba(230, 233, 255, 0.35) 0 18px,
+          transparent 18px 36px
+        )
+        0 76% / 100% 2px no-repeat,
+      repeating-linear-gradient(
+          180deg,
+          rgba(0, 245, 255, 0.14) 0 2px,
+          transparent 2px 18px
+        )
+        0 24% / 100% 34% no-repeat,
+      linear-gradient(
+        180deg,
+        #001f2a 0 16%,
+        #002633 16% 50%,
+        #15151f 50% 60%,
+        #0f0f18 60% 92%,
+        #15151f 92%
+      );
   }
+  /* Coche magenta, camión amarillo y dos troncos cian */
+  .cover-rana::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(var(--magenta), var(--magenta)) 14% 66% / 14% 7% no-repeat,
+      linear-gradient(var(--yellow), var(--yellow)) 78% 84% / 24% 7% no-repeat,
+      linear-gradient(rgba(0, 245, 255, 0.35), rgba(0, 245, 255, 0.35)) 70%
+        22% / 30% 8% no-repeat,
+      linear-gradient(rgba(0, 245, 255, 0.35), rgba(0, 245, 255, 0.35)) 18%
+        38% / 26% 8% no-repeat;
+    filter: drop-shadow(0 0 6px rgba(255, 0, 110, 0.45));
+  }
+  /* Rana en el arcén y dos nenúfares en la meta */
   .cover-rana::after {
     content: "";
     position: absolute;
     inset: 0;
     background:
-      repeating-linear-gradient(
-        0deg,
-        rgba(0, 245, 255, 0.18) 0 20px,
-        transparent 20px 40px
+      radial-gradient(circle at 50% 55%, var(--green) 0 13px, transparent 14px),
+      radial-gradient(
+        circle at 30% 8%,
+        transparent 0 7px,
+        var(--green) 8px 10px,
+        transparent 11px
       ),
-      radial-gradient(circle at 50% 55%, var(--green) 0 14px, transparent 15px);
-    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
+      radial-gradient(
+        circle at 72% 8%,
+        transparent 0 7px,
+        var(--green) 8px 10px,
+        transparent 11px
+      );
+    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.6));
   }
   .cover-duelo {
     background: #0a0a18;
