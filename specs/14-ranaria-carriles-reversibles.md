@@ -1,6 +1,6 @@
 # SPEC ranaria/03 — Carriles reversibles en RANARIA
 
-> **Estado:** APROVADA
+> **Estado:** implementada
 > **Depende de:** SPEC ranaria/02
 > **Fecha:** 2026-11-06
 > **Objetivo:** Añadir a RANARIA, desde el tramo 3, carriles que invierten su sentido cada 6–9 s tras un aviso de 1 s, para que los tramos altos exijan leer el ritmo de los carriles y no solo su velocidad.
@@ -135,23 +135,23 @@ Esta spec no usa `next/dynamic`, así que no hace falta leer `node_modules/next/
 
 ## Criterios de aceptación
 
-- [ ] `npm run build`, `npm run lint` y `npx tsc --noEmit` terminan sin errores.
-- [ ] No hay migración nueva y `git diff lib/supabase/database.types.ts` está vacío.
-- [ ] En los tramos 1 y 2 ningún carril invierte su sentido y no se dibuja ninguna flecha doble.
-- [ ] En el tramo 3 hay exactamente 1 carril reversible; en el tramo 4, 2; en el tramo 5 y siguientes, 3; nunca dos en filas contiguas.
-- [ ] Cada carril reversible lleva la flecha doble tenue en sus dos extremos durante todo el tramo.
-- [ ] La primera inversión de cada carril reversible empieza entre 6 y 9 s después de generarse el tramo, y entre una inversión y la siguiente pasan entre 6 y 9 s más los 0,6 s de la rampa.
-- [ ] Durante el segundo anterior a cada inversión, los chevrones amarillos parpadean cada 125 ms en los dos extremos del carril y apuntan al sentido nuevo.
-- [ ] La velocidad pasa de `v` a `−v` en 0,6 s, es 0 a los 0,3 s y después mantiene el mismo valor absoluto que tenía.
-- [ ] Sobre un tronco de un carril que se invierte, la rana frena, se para y vuelve en sentido contrario junto con el tronco, sin saltos.
-- [ ] Un tronco que se hunde en un carril reversible sigue su ciclo de 3 s a flote, 1 s parpadeando y 1,5 s hundido.
-- [ ] Los objetos de un carril invertido entran y salen por los bordes sin saltos visibles.
-- [ ] En pausa y durante los 1 s de `dying` ni la cuenta atrás ni la rampa avanzan; durante el respawn de 0,8 s sí.
-- [ ] Los chevrones y la flecha doble no tienen glow; solo la rana y los nenúfares lo tienen.
-- [ ] La puntuación sigue las fórmulas de la SPEC `ranaria/02`: cruzar el tramo 1 sin retroceder ni morir con 18,4 s en el reloj deja la partida en 380 puntos.
-- [ ] El HUD, el overlay de inicio, la pausa y `GameOverModal` funcionan igual que en la SPEC `ranaria/02`.
-- [ ] Las puntuaciones guardadas antes de esta spec siguen apareciendo en `/juegos/ranaria` y en `/salon?juego=ranaria`.
-- [ ] Salir y volver a entrar no deja listeners ni bucles duplicados (también en `npm run dev` con StrictMode) y no hay errores en la consola.
+- [x] `npm run build`, `npm run lint` y `npx tsc --noEmit` terminan sin errores.
+- [x] No hay migración nueva y `git diff lib/supabase/database.types.ts` está vacío.
+- [x] En los tramos 1 y 2 ningún carril invierte su sentido y no se dibuja ninguna flecha doble.
+- [x] En el tramo 3 hay exactamente 1 carril reversible; en el tramo 4, 2; en el tramo 5 y siguientes, 3; nunca dos en filas contiguas.
+- [x] Cada carril reversible lleva la flecha doble tenue en sus dos extremos durante todo el tramo.
+- [x] La primera inversión de cada carril reversible empieza entre 6 y 9 s después de generarse el tramo, y entre una inversión y la siguiente pasan entre 6 y 9 s más los 0,6 s de la rampa.
+- [x] Durante el segundo anterior a cada inversión, los chevrones amarillos parpadean cada 125 ms en los dos extremos del carril y apuntan al sentido nuevo.
+- [x] La velocidad pasa de `v` a `−v` en 0,6 s, es 0 a los 0,3 s y después mantiene el mismo valor absoluto que tenía.
+- [x] Sobre un tronco de un carril que se invierte, la rana frena, se para y vuelve en sentido contrario junto con el tronco, sin saltos.
+- [x] Un tronco que se hunde en un carril reversible sigue su ciclo de 3 s a flote, 1 s parpadeando y 1,5 s hundido.
+- [x] Los objetos de un carril invertido entran y salen por los bordes sin saltos visibles.
+- [x] En pausa y durante los 1 s de `dying` ni la cuenta atrás ni la rampa avanzan; durante el respawn de 0,8 s sí.
+- [x] Los chevrones y la flecha doble no tienen glow; solo la rana y los nenúfares lo tienen.
+- [x] La puntuación sigue las fórmulas de la SPEC `ranaria/02`: cruzar el tramo 1 sin retroceder ni morir con 18,4 s en el reloj deja la partida en 380 puntos.
+- [x] El HUD, el overlay de inicio, la pausa y `GameOverModal` funcionan igual que en la SPEC `ranaria/02`.
+- [x] Las puntuaciones guardadas antes de esta spec siguen apareciendo en `/juegos/ranaria` y en `/salon?juego=ranaria`.
+- [x] Salir y volver a entrar no deja listeners ni bucles duplicados (también en `npm run dev` con StrictMode) y no hay errores en la consola.
 
 ## Decisiones
 

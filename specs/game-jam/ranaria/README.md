@@ -33,11 +33,11 @@ El diseño es original dentro del género. No copia el tablero, los personajes n
 
 ## Specs
 
-| Archivo                                                                          | Objetivo                                                                                                                 | Depende de                              | Estado   |
-| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- | -------- |
-| [`12-ranaria-catalogo.md`](../../12-ranaria-catalogo.md)                         | Actualizar `short` y `long` de `ranaria` con una migración y rediseñar `.cover-rana` con carriles, río, rana y nenúfares | SPEC 06, SPEC 07                        | Aprobado |
-| [`13-ranaria-jugable.md`](../../13-ranaria-jugable.md)                           | Motor, player, casilla Tiempo de `PlayerHud`, registro y `accepts_scores = true`                                         | SPEC 05, SPEC 06, SPEC 07, `ranaria/01` | Aprobado |
-| [`14-ranaria-carriles-reversibles.md`](../../14-ranaria-carriles-reversibles.md) | Desde el tramo 3, hasta 3 carriles que invierten el sentido cada 6–9 s con aviso de 1 s; sin migración                   | `ranaria/02`                            | Aprobado |
+| Archivo                                                                          | Objetivo                                                                                                                 | Depende de                              | Estado       |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- | ------------ |
+| [`12-ranaria-catalogo.md`](../../12-ranaria-catalogo.md)                         | Actualizar `short` y `long` de `ranaria` con una migración y rediseñar `.cover-rana` con carriles, río, rana y nenúfares | SPEC 06, SPEC 07                        | Implementada |
+| [`13-ranaria-jugable.md`](../../13-ranaria-jugable.md)                           | Motor, player, casilla Tiempo de `PlayerHud`, registro y `accepts_scores = true`                                         | SPEC 05, SPEC 06, SPEC 07, `ranaria/01` | Implementada |
+| [`14-ranaria-carriles-reversibles.md`](../../14-ranaria-carriles-reversibles.md) | Desde el tramo 3, hasta 3 carriles que invierten el sentido cada 6–9 s con aviso de 1 s; sin migración                   | `ranaria/02`                            | Implementada |
 
 ## Cómo seguir
 
