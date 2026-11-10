@@ -1,6 +1,6 @@
 # SPEC ranaria/01 — Ajuste del catálogo de RANARIA: texto y portada
 
-> **Estado:** Borrador
+> **Estado:** implementada
 > **Depende de:** SPEC 06, SPEC 07
 > **Fecha:** 2026-11-06
 > **Objetivo:** Ajustar la entrada `ranaria`, que ya existe en `public.games`, para que su texto describa el diseño original de la game jam (tramos sin fin, reloj de 30 s y troncos que se hunden) y rediseñar su portada `cover-rana` con carriles, río, rana y nenúfares, sin insertar ninguna fila nueva.
@@ -177,18 +177,18 @@ Esta spec no usa `next/dynamic`, así que no hace falta leer `node_modules/next/
 
 ## Criterios de aceptación
 
-- [ ] `npm run build`, `npm run lint` y `npx tsc --noEmit` terminan sin errores.
-- [ ] `npx supabase migration list --linked` muestra la migración `ranaria_catalogo` aplicada en el remoto.
-- [ ] `select id, title, short, cat, cover, color, sort_order, accepts_scores from public.games where id = 'ranaria'` devuelve una sola fila con `RANARIA`, `Cruza la autopista de píxeles sin fin.`, `ARCADE`, `cover-rana`, `green`, `7` y `false`.
-- [ ] `public.games` sigue teniendo 8 filas y ningún `sort_order` repetido.
-- [ ] Con la publishable key, insertar en `public.scores` una fila para `ranaria` **falla** por RLS (aún no acepta puntuaciones).
-- [ ] `get_advisors` de seguridad no muestra avisos nuevos.
-- [ ] `/juegos/ranaria` muestra el `long` nuevo, de 3 frases, y `EmptyScores`.
-- [ ] La tarjeta de RANARIA en `/biblioteca` muestra el `short` nuevo, aparece con el filtro TODOS y ARCADE y no aparece con PUZZLE, SHOOTER ni VERSUS.
-- [ ] La portada muestra 5 bandas horizontales (meta, río, arcén, carretera, orilla), 1 coche magenta, 1 camión amarillo, 2 troncos cian, 1 rana verde y 2 nenúfares verdes, solo con CSS y sin imágenes.
-- [ ] `/juegos/ranaria/jugar` sigue mostrando el `GamePlayer` simulado.
-- [ ] Las portadas de los otros 7 juegos no cambian.
-- [ ] A 375 px de ancho, `/biblioteca` y `/juegos/ranaria` no tienen scroll horizontal.
+- [x] `npm run build`, `npm run lint` y `npx tsc --noEmit` terminan sin errores.
+- [x] `npx supabase migration list --linked` muestra la migración `ranaria_catalogo` aplicada en el remoto.
+- [x] `select id, title, short, cat, cover, color, sort_order, accepts_scores from public.games where id = 'ranaria'` devuelve una sola fila con `RANARIA`, `Cruza la autopista de píxeles sin fin.`, `ARCADE`, `cover-rana`, `green`, `7` y `false`.
+- [x] `public.games` sigue teniendo 8 filas y ningún `sort_order` repetido.
+- [x] Con la publishable key, insertar en `public.scores` una fila para `ranaria` **falla** por RLS (aún no acepta puntuaciones).
+- [x] `get_advisors` de seguridad no muestra avisos nuevos.
+- [x] `/juegos/ranaria` muestra el `long` nuevo, de 3 frases, y `EmptyScores`.
+- [x] La tarjeta de RANARIA en `/biblioteca` muestra el `short` nuevo, aparece con el filtro TODOS y ARCADE y no aparece con PUZZLE, SHOOTER ni VERSUS.
+- [x] La portada muestra 5 bandas horizontales (meta, río, arcén, carretera, orilla), 1 coche magenta, 1 camión amarillo, 2 troncos cian, 1 rana verde y 2 nenúfares verdes, solo con CSS y sin imágenes.
+- [x] `/juegos/ranaria/jugar` sigue mostrando el `GamePlayer` simulado.
+- [x] Las portadas de los otros 7 juegos no cambian.
+- [x] A 375 px de ancho, `/biblioteca` y `/juegos/ranaria` no tienen scroll horizontal.
 
 ## Decisiones
 

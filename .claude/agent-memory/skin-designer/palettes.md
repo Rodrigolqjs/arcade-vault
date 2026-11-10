@@ -78,3 +78,26 @@ Claves: paddle, ball, blocks{red,yellow,cyan,magenta,hotpink,green,gray}, bg, di
 ### retro — implementada (8 bits, 4 tonos, bg `#0e0812` lum 0.0031, glow 0, edges hard, sin bisel)
 - crema `#fff1d0` 17.65/11.65/2.63 (bola, hotpink) · ocre `#f0b030` 10.32/6.96/1.95 (pala, yellow, gray) · verde azulado `#38b8a6` 8.07/5.55/1.72 (cyan, green) · ladrillo `#ec6a40` 6.31/4.43/1.55 (red, magenta) — ningún par < 0.05; ninguna fila adyacente de los 5 niveles comparte tono
 - Descartado: teal `#3cc8b4` (0.042 con ocre).
+
+## ranaria (motor ranaria) — implementada 2026-11-10 en `lib/games/ranaria/skins.ts`
+
+Claves: frog, frogEyes, frogPupil, lily, car/van/truck (1/2/3 celdas), log (relleno), logEdge, logWarn, logWarnFill, logUnder, dead, goal, river, bank, road, laneLine (bordillo = misma a 0.5), windscreen, glow {frog, lily, vehicle}, edges. Sin fondo único: cada entidad se mide contra su banda (vehículos/carretera, troncos/río, nenúfar/meta, rana/banda más clara y relleno del tronco). Sin sprites.
+
+### clasico — implementada (COLORS + GLOW {frog 14, lily 12}, vehículos 0), con hallazgos
+- carretera `#0f0f18`: coche `#ff006e` 4.97/3.51/**1.32** · furgoneta `#00f5ff` 14.07 · camión `#f5ff00` 17.41 · líneas 0.35 2.86 · bordillo 1.62
+- río `#002633` (lum 0.0163): borde tronco `#00f5ff` 11.70/7.75/1.86 · aviso `#ff006e` **4.13/2.91/1.10** · relleno tronco `#006e7a` 2.67 · hundido 1.28 · relleno aviso **1.11**
+- rana `#00ff88` sobre arcén 13.51/8.94/2.14, sobre relleno del tronco **4.46/2.95/1.42** · muerta `#ff006e` 4.13 en río (efecto)
+- Propuestas: coche `#ff5ca0` (1.54), aviso `#ff8ab8` (7.23/4.93/1.46), relleno tronco ~0.25
+
+### neon — implementada (glow rana 20, nenúfar 16, vehículos 8)
+- bandas: carretera `#000000`, río `#00142a`, meta `#000a14`, arcén `#0a0a14`
+- coche `#ff2fd0` 6.57/4.58/1.60 · furgoneta `#00e5ff` 13.65 · camión `#ffff00` 19.56 · líneas cian 0.3 1.95 · bordillo 1.26
+- río: borde `#ffa200` 9.19/6.23/1.77 · aviso/muerta `#ff6ae6` 7.46/5.12/1.60 · relleno 0.18 1.34 · relleno aviso 1.40 · hundido 1.82
+- rana `#39ff14` 14.52 sobre arcén, ~10.1/6.7/1.62 sobre relleno · nenúfar 14.70 sobre meta
+- Descartados: aviso `#ff2fd0` (esquina 1.46 en río), relleno de tronco 0.22 (rana encima 1.48)
+
+### retro — implementada (4 tonos, glow 0, edges hard)
+- bandas: carretera `#0e0c16`, río `#0a0c20`, meta `#0c0e18`, arcén `#16121e` (todas lum ≤ 0.007)
+- lima `#c8f060` (rana, nenúfar) 14.12+ · salmón `#ff8a80` (coche, aviso, muerta) 8.50/5.81/1.75 · hueso `#f0e8d0` (furgoneta, ojos) 15.85 · lavanda `#9484e8` (camión, troncos) 6.19/4.34/1.53 en río
+- relleno tronco 0.25 1.44 · relleno aviso 1.55 · hundido 0.35 1.75 · líneas 0.3 2.36 · bordillo 1.43 · rana sobre relleno 10.28/6.81/1.63
+- Descartado: lavanda `#b0a0f0` (misma luminancia que salmón, 0.407 vs 0.410: aviso indistinguible del borde)

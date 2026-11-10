@@ -340,6 +340,20 @@
       display: inline-flex;
     }
   }
+  /* Touch (s/p/l/tp/tl): logo 28-36px and hamburger 41px tall were under the
+     44px tap target. The hit area grows with padding + negative margin, so the
+     nav keeps its 66px height (the landscape CRT formula relies on it). */
+  @media (pointer: coarse) {
+    .av-nav .logo {
+      padding-block: 8px;
+      margin-block: -8px;
+    }
+    .av-nav .hamburger {
+      min-width: 44px;
+      min-height: 44px;
+      margin-block: -1.5px;
+    }
+  }
   .av-mobile-panel {
     position: fixed;
     inset: 0 0 0 auto;
@@ -349,13 +363,20 @@
     z-index: 60;
     padding: 24px 20px;
     transform: translateX(100%);
-    transition: transform 220ms ease;
+    /* Closed: hidden too, so its links leave the tab order and stop sticking
+       out past the right edge (visibility flips after the slide-out). */
+    visibility: hidden;
+    transition:
+      transform 220ms ease,
+      visibility 0s linear 220ms;
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
   .av-mobile-panel.open {
     transform: translateX(0);
+    visibility: visible;
+    transition: transform 220ms ease;
   }
   .av-mobile-panel a {
     padding: 14px 12px;
@@ -857,21 +878,64 @@
     font-size: 22px;
     text-shadow: 0 0 8px var(--yellow);
   }
+  /* RANARIA: tablero en bandas (meta, río, arcén, carretera, orilla) */
   .cover-rana {
-    background: linear-gradient(180deg, #001f2a, #0a0a18);
+    background:
+      repeating-linear-gradient(
+          90deg,
+          rgba(230, 233, 255, 0.35) 0 18px,
+          transparent 18px 36px
+        )
+        0 76% / 100% 2px no-repeat,
+      repeating-linear-gradient(
+          180deg,
+          rgba(0, 245, 255, 0.14) 0 2px,
+          transparent 2px 18px
+        )
+        0 24% / 100% 34% no-repeat,
+      linear-gradient(
+        180deg,
+        #001f2a 0 16%,
+        #002633 16% 50%,
+        #15151f 50% 60%,
+        #0f0f18 60% 92%,
+        #15151f 92%
+      );
   }
+  /* Coche magenta, camión amarillo y dos troncos cian */
+  .cover-rana::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(var(--magenta), var(--magenta)) 14% 66% / 14% 7% no-repeat,
+      linear-gradient(var(--yellow), var(--yellow)) 78% 84% / 24% 7% no-repeat,
+      linear-gradient(rgba(0, 245, 255, 0.35), rgba(0, 245, 255, 0.35)) 70%
+        22% / 30% 8% no-repeat,
+      linear-gradient(rgba(0, 245, 255, 0.35), rgba(0, 245, 255, 0.35)) 18%
+        38% / 26% 8% no-repeat;
+    filter: drop-shadow(0 0 6px rgba(255, 0, 110, 0.45));
+  }
+  /* Rana en el arcén y dos nenúfares en la meta */
   .cover-rana::after {
     content: "";
     position: absolute;
     inset: 0;
     background:
-      repeating-linear-gradient(
-        0deg,
-        rgba(0, 245, 255, 0.18) 0 20px,
-        transparent 20px 40px
+      radial-gradient(circle at 50% 55%, var(--green) 0 13px, transparent 14px),
+      radial-gradient(
+        circle at 30% 8%,
+        transparent 0 7px,
+        var(--green) 8px 10px,
+        transparent 11px
       ),
-      radial-gradient(circle at 50% 55%, var(--green) 0 14px, transparent 15px);
-    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
+      radial-gradient(
+        circle at 72% 8%,
+        transparent 0 7px,
+        var(--green) 8px 10px,
+        transparent 11px
+      );
+    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.6));
   }
   .cover-duelo {
     background: #0a0a18;
@@ -1112,6 +1176,21 @@
   .hud-stat.level .v {
     color: var(--yellow);
     text-shadow: 0 0 6px rgba(245, 255, 0, 0.5);
+  }
+  /* Tiempo (RANARIA): verde y, con 5 s o menos, magenta parpadeando */
+  .hud-stat.time .v {
+    color: var(--green);
+    text-shadow: 0 0 6px rgba(0, 255, 136, 0.5);
+  }
+  .hud-stat.time.low .v {
+    color: var(--magenta);
+    text-shadow: 0 0 6px rgba(255, 0, 110, 0.5);
+    animation: blink 1s steps(1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hud-stat.time.low .v {
+      animation: none;
+    }
   }
   .hud-actions {
     display: flex;
@@ -1625,6 +1704,20 @@
     .hud-actions .btn {
       min-height: 44px;
     }
+    /* s/p/l: the CRT status strip wrapped to 2-3 lines (RANARIA, BLOQUE
+       BUSTER), making the CRT taller than the 86px chrome the landscape cap
+       assumes. One line: the title span gives way with an ellipsis. */
+    .crt-bottom {
+      gap: 12px;
+    }
+    .crt-bottom > span {
+      white-space: nowrap;
+    }
+    .crt-bottom > span:nth-child(2) {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   /* Touch, landscape: d-pad left of the CRT, action buttons right of it. The
      CRT width is capped by the viewport height so the whole screen fits under
@@ -1814,6 +1907,27 @@
     justify-content: center;
     margin-top: 18px;
     flex-wrap: wrap;
+  }
+  /* Touch (l, and any phone with the keyboard open): the modal (418px) was
+     taller than the viewport (390px, 234px with the keyboard) and its top was
+     cut off with no way to scroll. The backdrop scrolls and margin: auto keeps
+     it centered when it fits and top-aligned when it doesn't. The initials
+     input goes from 14px to 16px so iOS doesn't zoom in on focus. */
+  @media (pointer: coarse) {
+    .modal-bd {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .modal {
+      margin: auto;
+    }
+    .modal .input-row input {
+      font-size: 16px;
+    }
+    /* JUGAR DE NUEVO / VOLVER AL VAULT measured 41px tall. */
+    .modal .actions .btn {
+      min-height: 44px;
+    }
   }
   .toast-saved {
     font-family: var(--pixel);

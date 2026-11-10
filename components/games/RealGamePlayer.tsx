@@ -17,6 +17,9 @@ const PLAYERS: Record<PlayableGameId, ComponentType<{ game: Game }>> = {
   "bloque-buster": dynamic(() => import("@/components/games/ArkanoidPlayer"), {
     ssr: false,
   }),
+  ranaria: dynamic(() => import("@/components/games/RanariaPlayer"), {
+    ssr: false,
+  }),
 };
 export default function RealGamePlayer({
   id,
