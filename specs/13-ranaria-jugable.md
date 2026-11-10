@@ -1,6 +1,6 @@
 # SPEC ranaria/02 — Cruce de carriles sin fin jugable en RANARIA
 
-> **Estado:** APROVADA
+> **Estado:** implementada
 > **Depende de:** SPEC 05, SPEC 06, SPEC 07, SPEC ranaria/01
 > **Fecha:** 2026-11-06
 > **Objetivo:** Crear un juego original de cruce de carriles por tramos sin fin (carretera, río con troncos que se hunden y nenúfares como meta, con reloj de 30 s por tramo) y montarlo en `/juegos/ranaria/jugar` con el HUD, la pausa, el modal de fin de juego y el leaderboard real de la plataforma.
@@ -392,42 +392,42 @@ Antes de escribir código, leer `node_modules/next/dist/docs/01-app/02-guides/la
 
 ## Criterios de aceptación
 
-- [ ] `npm run build`, `npm run lint` y `npx tsc --noEmit` terminan sin errores.
-- [ ] `npx supabase migration list --linked` muestra la migración `ranaria_jugable` aplicada en el remoto.
-- [ ] Con la publishable key, insertar en `public.scores` para `ranaria` funciona.
-- [ ] `get_advisors` de seguridad no muestra avisos nuevos.
-- [ ] `/juegos/ranaria/jugar` muestra el canvas dentro del CRT con el overlay "PULSA ESPACIO_"; detrás se ve el tramo 1 quieto y nada se mueve hasta arrancar.
-- [ ] Espacio o clic en el CRT arrancan la partida; esa pulsación no hace saltar a la rana.
-- [ ] La rana empieza en la columna 7 de la fila 11 con el HUD en 0 puntos, ♥ ♥ ♥, nivel 01 y tiempo 30.
-- [ ] Cada pulsación de flecha o WASD mueve la rana exactamente 50 px; mantener la tecla pulsada da un solo salto.
-- [ ] La rana no puede bajar de la fila 11 ni salir por los lados al saltar.
-- [ ] El tramo 1 tiene 5 carriles de vehículos, 4 de troncos, un arcén y 4 nenúfares; el tramo 2, 3 nenúfares; el tramo 3 y siguientes, 2.
-- [ ] Los carriles contiguos del mismo tipo se mueven en sentidos opuestos y los objetos entran y salen por los bordes sin saltos visibles.
-- [ ] Tocar un vehículo, caer al agua, quedarse sobre un tronco hundido, salir arrastrada del canvas, saltar a la fila 0 fuera de un nenúfar o llegar a 0 s quitan una vida.
-- [ ] Sobre un tronco, la rana avanza con él a la velocidad del carril.
-- [ ] En el tramo 1 hay exactamente 1 carril de troncos que se hunden, y en el tramo 4 y siguientes los 4.
-- [ ] Un tronco que se hunde parpadea durante 1 s antes de hundirse, sigue aguantando a la rana mientras parpadea, pasa 1,5 s hundido y reaparece en su sitio; nunca hay más de 2 troncos hundidos a la vez en un carril.
-- [ ] Cada fila nueva del tramo suma `10 × tramo`; volver a pisar una fila ya alcanzada en el mismo tramo, aunque sea tras perder una vida, no suma nada.
-- [ ] Tocar un nenúfar en el tramo 1 con 18,4 s en el reloj deja la partida en 380 puntos si se cruzó sin retroceder ni morir.
-- [ ] Al tocar un nenúfar, el nivel del HUD sube 1, el tramo se genera de nuevo, la rana vuelve a la salida y el tiempo vuelve a 30.
-- [ ] En el tramo 2 los carriles van a ×1,12 de su velocidad base, y desde el tramo 11 a ×2,2.
-- [ ] El reloj baja 1 por segundo jugando; con 5 o menos, la casilla Tiempo se pone en magenta y parpadea.
-- [ ] Al perder una vida con vidas restantes, la rana parpadea en magenta 0,8 s mientras los carriles siguen moviéndose, y después reaparece en la salida con el tiempo a 30.
-- [ ] El HUD muestra Puntuación, Vidas (♥), Nivel y Tiempo; al perder la tercera vida, Vidas pasa a "—".
-- [ ] Los demás juegos reales y los simulados no muestran la casilla Tiempo.
-- [ ] El canvas no pinta puntuación, vidas, nivel, tiempo, pausa ni GAME OVER.
-- [ ] La rana es verde con ojos claros y glow; los nenúfares son anillos verdes con glow; coches magenta, furgonetas cian y camiones amarillos sin glow; troncos cian translúcidos sin glow.
-- [ ] El canvas ocupa `.crt-screen`, se ve nítido con `devicePixelRatio` 2 y a 375 px de ancho no hay scroll horizontal.
-- [ ] PAUSA, `P` y `Escape` pausan y reanudan; cambiar de pestaña o ventana deja la partida en pausa y el reloj no baja mientras está en pausa.
-- [ ] Al perder la última vida, el campo se congela, la rana parpadea en magenta y `GameOverModal` se abre con la puntuación final aproximadamente 1 s después; pausar durante ese segundo y reanudar sigue llevando al modal.
-- [ ] FIN abre `GameOverModal` con la puntuación actual y el juego se detiene.
-- [ ] Guardar con iniciales muestra "PUNTUACIÓN GUARDADA · PUESTO #NN" y la fila aparece en `/juegos/ranaria` y en `/salon?juego=ranaria`.
-- [ ] La tarjeta de RANARIA en `/biblioteca` muestra la mejor puntuación real.
-- [ ] "JUGAR DE NUEVO" empieza una partida con un tramo 1 nuevo, puntuación 0, 3 vidas, nivel 01 y tiempo 30, y su modal vuelve a permitir guardar.
-- [ ] Con el modal abierto se pueden escribir iniciales con espacios y con las letras W, A, S y D; flechas y Espacio no hacen scroll mientras se juega.
-- [ ] Salir y volver a entrar no deja listeners ni bucles duplicados (también en `npm run dev` con StrictMode): la velocidad es la misma, un salto mueve 50 px y no hay errores en la consola.
-- [ ] `/juegos/rocas/jugar`, `/juegos/caida/jugar`, `/juegos/serpentina/jugar`, `/juegos/bloque-buster/jugar` y los juegos simulados siguen funcionando igual.
-- [ ] No hay ningún import de `reference/` en `app/`, `components/` ni `lib/`.
+- [x] `npm run build`, `npm run lint` y `npx tsc --noEmit` terminan sin errores.
+- [x] `npx supabase migration list --linked` muestra la migración `ranaria_jugable` aplicada en el remoto.
+- [x] Con la publishable key, insertar en `public.scores` para `ranaria` funciona.
+- [x] `get_advisors` de seguridad no muestra avisos nuevos.
+- [x] `/juegos/ranaria/jugar` muestra el canvas dentro del CRT con el overlay "PULSA ESPACIO_"; detrás se ve el tramo 1 quieto y nada se mueve hasta arrancar.
+- [x] Espacio o clic en el CRT arrancan la partida; esa pulsación no hace saltar a la rana.
+- [x] La rana empieza en la columna 7 de la fila 11 con el HUD en 0 puntos, ♥ ♥ ♥, nivel 01 y tiempo 30.
+- [x] Cada pulsación de flecha o WASD mueve la rana exactamente 50 px; mantener la tecla pulsada da un solo salto.
+- [x] La rana no puede bajar de la fila 11 ni salir por los lados al saltar.
+- [x] El tramo 1 tiene 5 carriles de vehículos, 4 de troncos, un arcén y 4 nenúfares; el tramo 2, 3 nenúfares; el tramo 3 y siguientes, 2.
+- [x] Los carriles contiguos del mismo tipo se mueven en sentidos opuestos y los objetos entran y salen por los bordes sin saltos visibles.
+- [x] Tocar un vehículo, caer al agua, quedarse sobre un tronco hundido, salir arrastrada del canvas, saltar a la fila 0 fuera de un nenúfar o llegar a 0 s quitan una vida.
+- [x] Sobre un tronco, la rana avanza con él a la velocidad del carril.
+- [x] En el tramo 1 hay exactamente 1 carril de troncos que se hunden, y en el tramo 4 y siguientes los 4.
+- [x] Un tronco que se hunde parpadea durante 1 s antes de hundirse, sigue aguantando a la rana mientras parpadea, pasa 1,5 s hundido y reaparece en su sitio; nunca hay más de 2 troncos hundidos a la vez en un carril.
+- [x] Cada fila nueva del tramo suma `10 × tramo`; volver a pisar una fila ya alcanzada en el mismo tramo, aunque sea tras perder una vida, no suma nada.
+- [x] Tocar un nenúfar en el tramo 1 con 18,4 s en el reloj deja la partida en 380 puntos si se cruzó sin retroceder ni morir.
+- [x] Al tocar un nenúfar, el nivel del HUD sube 1, el tramo se genera de nuevo, la rana vuelve a la salida y el tiempo vuelve a 30.
+- [x] En el tramo 2 los carriles van a ×1,12 de su velocidad base, y desde el tramo 11 a ×2,2.
+- [x] El reloj baja 1 por segundo jugando; con 5 o menos, la casilla Tiempo se pone en magenta y parpadea.
+- [x] Al perder una vida con vidas restantes, la rana parpadea en magenta 0,8 s mientras los carriles siguen moviéndose, y después reaparece en la salida con el tiempo a 30.
+- [x] El HUD muestra Puntuación, Vidas (♥), Nivel y Tiempo; al perder la tercera vida, Vidas pasa a "—".
+- [x] Los demás juegos reales y los simulados no muestran la casilla Tiempo.
+- [x] El canvas no pinta puntuación, vidas, nivel, tiempo, pausa ni GAME OVER.
+- [x] La rana es verde con ojos claros y glow; los nenúfares son anillos verdes con glow; coches magenta, furgonetas cian y camiones amarillos sin glow; troncos cian translúcidos sin glow.
+- [x] El canvas ocupa `.crt-screen`, se ve nítido con `devicePixelRatio` 2 y a 375 px de ancho no hay scroll horizontal.
+- [x] PAUSA, `P` y `Escape` pausan y reanudan; cambiar de pestaña o ventana deja la partida en pausa y el reloj no baja mientras está en pausa.
+- [x] Al perder la última vida, el campo se congela, la rana parpadea en magenta y `GameOverModal` se abre con la puntuación final aproximadamente 1 s después; pausar durante ese segundo y reanudar sigue llevando al modal.
+- [x] FIN abre `GameOverModal` con la puntuación actual y el juego se detiene.
+- [x] Guardar con iniciales muestra "PUNTUACIÓN GUARDADA · PUESTO #NN" y la fila aparece en `/juegos/ranaria` y en `/salon?juego=ranaria`.
+- [x] La tarjeta de RANARIA en `/biblioteca` muestra la mejor puntuación real.
+- [x] "JUGAR DE NUEVO" empieza una partida con un tramo 1 nuevo, puntuación 0, 3 vidas, nivel 01 y tiempo 30, y su modal vuelve a permitir guardar.
+- [x] Con el modal abierto se pueden escribir iniciales con espacios y con las letras W, A, S y D; flechas y Espacio no hacen scroll mientras se juega.
+- [x] Salir y volver a entrar no deja listeners ni bucles duplicados (también en `npm run dev` con StrictMode): la velocidad es la misma, un salto mueve 50 px y no hay errores en la consola.
+- [x] `/juegos/rocas/jugar`, `/juegos/caida/jugar`, `/juegos/serpentina/jugar`, `/juegos/bloque-buster/jugar` y los juegos simulados siguen funcionando igual.
+- [x] No hay ningún import de `reference/` en `app/`, `components/` ni `lib/`.
 
 ## Decisiones
 
