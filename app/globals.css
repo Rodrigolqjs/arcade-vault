@@ -1156,6 +1156,21 @@
     color: var(--yellow);
     text-shadow: 0 0 6px rgba(245, 255, 0, 0.5);
   }
+  /* Tiempo (RANARIA): verde y, con 5 s o menos, magenta parpadeando */
+  .hud-stat.time .v {
+    color: var(--green);
+    text-shadow: 0 0 6px rgba(0, 255, 136, 0.5);
+  }
+  .hud-stat.time.low .v {
+    color: var(--magenta);
+    text-shadow: 0 0 6px rgba(255, 0, 110, 0.5);
+    animation: blink 1s steps(1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hud-stat.time.low .v {
+      animation: none;
+    }
+  }
   .hud-actions {
     display: flex;
     gap: 10px;

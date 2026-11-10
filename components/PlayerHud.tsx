@@ -15,6 +15,8 @@ interface PlayerHudProps {
   /** Juegos sin vidas: si está definida, la casilla "Vidas" pasa a "Líneas" con este valor. */
   lines?: number;
   level: number;
+  /** Juegos con reloj: si está definida, se añade la casilla "Tiempo" tras "Nivel"; con 5 s o menos parpadea en magenta. */
+  time?: number;
   paused: boolean;
   onTogglePause: () => void;
   onEnd: () => void;
@@ -26,6 +28,7 @@ export default function PlayerHud({
   lives,
   lines,
   level,
+  time,
   paused,
   onTogglePause,
   onEnd,
@@ -57,6 +60,12 @@ export default function PlayerHud({
           <div className="l">Nivel</div>
           <div className="v">{String(level).padStart(2, "0")}</div>
         </div>
+        {time !== undefined && (
+          <div className={`hud-stat time${time <= 5 ? " low" : ""}`}>
+            <div className="l">Tiempo</div>
+            <div className="v">{String(time).padStart(2, "0")}</div>
+          </div>
+        )}
       </div>
       <div className="hud-actions">
         <button
