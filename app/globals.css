@@ -340,6 +340,20 @@
       display: inline-flex;
     }
   }
+  /* Touch (s/p/l/tp/tl): logo 28-36px and hamburger 41px tall were under the
+     44px tap target. The hit area grows with padding + negative margin, so the
+     nav keeps its 66px height (the landscape CRT formula relies on it). */
+  @media (pointer: coarse) {
+    .av-nav .logo {
+      padding-block: 8px;
+      margin-block: -8px;
+    }
+    .av-nav .hamburger {
+      min-width: 44px;
+      min-height: 44px;
+      margin-block: -1.5px;
+    }
+  }
   .av-mobile-panel {
     position: fixed;
     inset: 0 0 0 auto;
@@ -349,13 +363,20 @@
     z-index: 60;
     padding: 24px 20px;
     transform: translateX(100%);
-    transition: transform 220ms ease;
+    /* Closed: hidden too, so its links leave the tab order and stop sticking
+       out past the right edge (visibility flips after the slide-out). */
+    visibility: hidden;
+    transition:
+      transform 220ms ease,
+      visibility 0s linear 220ms;
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
   .av-mobile-panel.open {
     transform: translateX(0);
+    visibility: visible;
+    transition: transform 220ms ease;
   }
   .av-mobile-panel a {
     padding: 14px 12px;
@@ -1683,6 +1704,20 @@
     .hud-actions .btn {
       min-height: 44px;
     }
+    /* s/p/l: the CRT status strip wrapped to 2-3 lines (RANARIA, BLOQUE
+       BUSTER), making the CRT taller than the 86px chrome the landscape cap
+       assumes. One line: the title span gives way with an ellipsis. */
+    .crt-bottom {
+      gap: 12px;
+    }
+    .crt-bottom > span {
+      white-space: nowrap;
+    }
+    .crt-bottom > span:nth-child(2) {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   /* Touch, landscape: d-pad left of the CRT, action buttons right of it. The
      CRT width is capped by the viewport height so the whole screen fits under
@@ -1872,6 +1907,27 @@
     justify-content: center;
     margin-top: 18px;
     flex-wrap: wrap;
+  }
+  /* Touch (l, and any phone with the keyboard open): the modal (418px) was
+     taller than the viewport (390px, 234px with the keyboard) and its top was
+     cut off with no way to scroll. The backdrop scrolls and margin: auto keeps
+     it centered when it fits and top-aligned when it doesn't. The initials
+     input goes from 14px to 16px so iOS doesn't zoom in on focus. */
+  @media (pointer: coarse) {
+    .modal-bd {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .modal {
+      margin: auto;
+    }
+    .modal .input-row input {
+      font-size: 16px;
+    }
+    /* JUGAR DE NUEVO / VOLVER AL VAULT measured 41px tall. */
+    .modal .actions .btn {
+      min-height: 44px;
+    }
   }
   .toast-saved {
     font-family: var(--pixel);
