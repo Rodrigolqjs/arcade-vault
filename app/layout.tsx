@@ -6,6 +6,7 @@ import {
 } from "next/font/google";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
+import { getCurrentPlayer } from "@/lib/data/auth";
 import "./globals.css";
 const pressStart2P = Press_Start_2P({
   variable: "--font-press-start-2p",
@@ -26,7 +27,9 @@ export const metadata: Metadata = {
   title: "Arcade Vault · Portal Retro",
   description: "Juega y compite por la puntuación más alta.",
 };
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Session in the Nav (SPEC 15): makes every page dynamic, most already were.
+  const player = await getCurrentPlayer();
   return (
     <html
       lang="es"
@@ -36,7 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <div className="av-bg" />
         <div className="av-noise" />
         <div className="av-root">
-          <Nav />
+          <Nav player={player} />
           <main className="av-main">{children}</main>
           <Footer />
         </div>

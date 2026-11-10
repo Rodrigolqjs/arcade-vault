@@ -317,6 +317,47 @@
   .av-nav .auth-btn {
     margin-left: 16px;
   }
+  /* Between 961 and 1100px a 16-char username + SALIR doesn't fit next to the
+     links: the decorative credit counter gives up its place (SPEC 15). */
+  @media (max-width: 1100px) {
+    .av-nav:has(.nav-player) .coin-counter {
+      display: none;
+    }
+  }
+  /* Signed-in player (SPEC 15): username (or ELIGE USUARIO) + SALIR, in place of auth-btn. */
+  .av-nav .nav-player {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    margin-left: 16px;
+  }
+  .av-nav .nav-player form {
+    flex-shrink: 0;
+  }
+  .av-nav .nav-player .btn {
+    padding: 10px 14px;
+    font-size: 9px;
+  }
+  .player-name {
+    font-family: var(--pixel);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    max-width: 180px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .player-name.pending {
+    color: var(--yellow);
+    text-shadow: 0 0 6px rgba(245, 255, 0, 0.45);
+  }
+  .player-name.pending:hover,
+  .player-name.pending:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
   .av-nav .hamburger {
     display: none;
   }
@@ -333,7 +374,8 @@
       display: none;
     }
     /* Not in the reference: logo + auth button + hamburger overflowed 375px. The panel already links to /login. */
-    .av-nav .auth-btn {
+    .av-nav .auth-btn,
+    .av-nav .nav-player {
       display: none;
     }
     .av-nav .hamburger {
@@ -387,6 +429,22 @@
   }
   .av-mobile-panel a.active {
     color: var(--cyan);
+  }
+  /* Signed-in player at the end of the panel list (SPEC 15). */
+  .av-mobile-panel .panel-player {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 12px 0;
+  }
+  .av-mobile-panel .panel-player .player-name {
+    max-width: 100%;
+    padding: 0;
+    border: 0;
+    font-size: 11px;
+  }
+  .av-mobile-panel .panel-player .btn {
+    min-height: 44px;
   }
   .av-mobile-backdrop {
     position: fixed;
@@ -2134,6 +2192,103 @@
   .social .btn {
     padding: 12px;
     font-size: 9px;
+  }
+  /* Real auth states (SPEC 15): hint, inline error, alert block, pending button, check-email panel. */
+  .field input[aria-invalid="true"] {
+    border-color: var(--magenta);
+  }
+  .field input[aria-invalid="true"]:focus {
+    box-shadow: 0 0 12px rgba(255, 0, 110, 0.35);
+  }
+  .field-hint,
+  .field-msg {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .field-hint {
+    color: var(--ink-dim);
+  }
+  .field-msg {
+    color: var(--magenta);
+  }
+  .auth-alert {
+    margin: 4px 0 6px;
+    padding: 10px 12px;
+    border: 1px solid var(--magenta);
+    border-left-width: 3px;
+    background: rgba(255, 0, 110, 0.08);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .auth-alert .tag {
+    color: var(--magenta);
+    font-weight: 700;
+    text-shadow: 0 0 6px rgba(255, 0, 110, 0.45);
+  }
+  .auth-link {
+    display: block;
+    width: fit-content;
+    margin: -4px 0 12px auto;
+    padding: 6px 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+  }
+  .auth-link:hover,
+  .auth-link:focus-visible {
+    color: var(--cyan);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .auth-intro {
+    margin: 0 0 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-dim);
+  }
+  .auth-card .btn:disabled {
+    opacity: 0.45;
+    cursor: progress;
+  }
+  .auth-sent {
+    margin-top: 18px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-dim);
+  }
+  .auth-sent h3 {
+    margin: 0 0 14px;
+    font-family: var(--pixel);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+  }
+  .auth-sent p {
+    margin: 0 0 6px;
+  }
+  .auth-sent .addr {
+    margin-bottom: 14px;
+    color: var(--cyan);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+  .auth-sent .caret {
+    animation: blink 1s steps(1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .auth-sent .caret {
+      animation: none;
+    }
   }
   /* ===== salón ===== */
   .av-hall {

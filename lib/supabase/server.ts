@@ -7,7 +7,9 @@ export async function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+    );
   }
   const cookieStore = await cookies();
   return createServerClient<Database>(url, key, {
@@ -21,8 +23,8 @@ export async function createClient() {
             cookieStore.set(name, value, options),
           );
         } catch {
-          // Server Components can't write cookies. Safe to ignore until a
-          // proxy refreshes the session (auth spec).
+          // Server Components can't write cookies. Safe to ignore: proxy.ts
+          // (lib/supabase/proxy.ts) refreshes the session on every request.
         }
       },
     },

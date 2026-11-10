@@ -2,7 +2,34 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-export default function Nav() {
+import { signOut } from "@/app/login/actions";
+import type { CurrentPlayer } from "@/lib/data/auth";
+// Signed-in player (SPEC 15): username in cyan, or a link to choose one.
+function PlayerName({
+  player,
+  onClick,
+}: {
+  player: CurrentPlayer;
+  onClick?: () => void;
+}) {
+  if (player.username === null) {
+    return (
+      <Link
+        href="/login/usuario"
+        className="player-name pending"
+        onClick={onClick}
+      >
+        ELIGE USUARIO
+      </Link>
+    );
+  }
+  return (
+    <span className="player-name neon-cyan" title={player.username}>
+      {player.username}
+    </span>
+  );
+}
+export default function Nav({ player }: { player: CurrentPlayer | null }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const isHome = pathname === "/";
@@ -40,9 +67,20 @@ export default function Nav() {
           <span className="coin" />
           <span>CRÉDITOS · 03</span>
         </div>
-        <Link href="/login" className="btn auth-btn">
-          Iniciar Sesión
-        </Link>
+        {player ? (
+          <div className="nav-player">
+            <PlayerName player={player} />
+            <form action={signOut}>
+              <button type="submit" className="btn ghost">
+                SALIR
+              </button>
+            </form>
+          </div>
+        ) : (
+          <Link href="/login" className="btn auth-btn">
+            Iniciar Sesión
+          </Link>
+        )}
         <button
           className="btn ghost hamburger"
           onClick={() => setOpen(true)}
@@ -77,9 +115,24 @@ export default function Nav() {
         >
           Acerca de
         </Link>
-        <Link href="/login" className={isAuth ? "active" : ""} onClick={close}>
-          Iniciar Sesión
-        </Link>
+        {player ? (
+          <div className="panel-player">
+            <PlayerName player={player} onClick={close} />
+            <form action={signOut}>
+              <button type="submit" className="btn ghost w-full">
+                SALIR
+              </button>
+            </form>
+          </div>
+        ) : (
+          <Link
+            href="/login"
+            className={isAuth ? "active" : ""}
+            onClick={close}
+          >
+            Iniciar Sesión
+          </Link>
+        )}
         <div className="flex-1" />
         <div className="pixel text-[9px] tracking-[0.16em] text-ink-faint">
           CRÉDITOS · 03
