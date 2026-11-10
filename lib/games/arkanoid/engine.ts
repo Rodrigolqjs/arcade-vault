@@ -36,6 +36,8 @@ export interface ArkanoidGame {
   end: () => number; // stops the game (FIN button) and returns the score
   destroy: () => void; // cancels the rAF and removes the listeners
   setSkin: (id: SkinId) => void; // swaps the palette; repaints if the loop is stopped
+  press: (code: string) => void; // touch controls: same path as keydown for that KeyboardEvent.code
+  release: (code: string) => void; // touch controls: same path as keyup
 }
 // dying: board frozen and dimmed for GAMEOVER_DELAY, no input. Entered after
 // losing the last life or clearing level 5.
@@ -84,14 +86,17 @@ export function createArkanoidGame(
   // ── Input ──
   // Arrows and the mouse only act while playing with the loop running. P,
   // Escape and Space belong to the player component.
-  const onKeyDown = (e: KeyboardEvent) => {
+  // Keyboard and touch controls share these, keyed by KeyboardEvent.code.
+  const keyDown = (code: string) => {
     if (!active()) return;
-    if (e.code === "ArrowLeft" || e.code === "ArrowRight") keys[e.code] = true;
+    if (code === "ArrowLeft" || code === "ArrowRight") keys[code] = true;
   };
+  const onKeyDown = (e: KeyboardEvent) => keyDown(e.code);
   // Releasing always clears, so a key let go during a pause can't stay held.
-  const onKeyUp = (e: KeyboardEvent) => {
-    if (e.code === "ArrowLeft" || e.code === "ArrowRight") keys[e.code] = false;
+  const keyUp = (code: string) => {
+    if (code === "ArrowLeft" || code === "ArrowRight") keys[code] = false;
   };
+  const onKeyUp = (e: KeyboardEvent) => keyUp(e.code);
   const onMouseMove = (e: MouseEvent) => {
     if (!active()) return;
     const rect = canvas.getBoundingClientRect();
@@ -227,6 +232,8 @@ export function createArkanoidGame(
       state = "gameover";
       return score;
     },
+    press: keyDown,
+    release: keyUp,
     setSkin(id) {
       palette = SKINS[id];
       // Frozen frame (ready, paused, game over): show the new skin right away.
