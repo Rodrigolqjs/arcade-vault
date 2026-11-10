@@ -13,8 +13,18 @@ import {
   LILY_RADIUS,
   LOG_LENGTHS,
   LOOP_MARGIN,
+  MAX_REVERSIBLE,
   MAX_SINKING_LANES,
   MAX_SPEED_MULT,
+  REVERSE_BLINK,
+  REVERSE_FROM_TRAMO,
+  REVERSE_MARK_H,
+  REVERSE_MARK_MARGIN,
+  REVERSE_MARK_W,
+  REVERSE_MAX,
+  REVERSE_MIN,
+  REVERSE_RAMP,
+  REVERSE_WARN,
   RIVER_GAP_MAX,
   RIVER_GAP_MIN,
   RIVER_ROWS,
@@ -50,9 +60,14 @@ export interface Mover {
 export interface Lane {
   row: number; // 1–4 río, 6–10 carretera
   kind: LaneKind;
-  speed: number; // px/s con signo (+ hacia la derecha)
+  speed: number; // px/s con signo, velocidad actual (cambia durante la rampa)
   sinking: boolean; // sus troncos se hunden (solo río)
   movers: Mover[];
+  // Carriles reversibles (SPEC ranaria/03)
+  reversible: boolean; // se invierte durante el tramo
+  cruise: number; // px/s con signo, velocidad de crucero del sentido actual
+  reverseIn: number; // s hasta empezar la rampa; el aviso se ve con reverseIn ≤ REVERSE_WARN
+  ramp: number; // s restantes de la rampa; 0 si no está invirtiendo
 }
 export interface Frog {
   x: number; // borde izquierdo en px, 0–750 al saltar
@@ -105,12 +120,17 @@ export function fillLane(
   // Shift the whole lane so stretches don't all start lined up at x = 0.
   const offset = Math.random() * LANE_LOOP;
   for (const m of movers) m.x = wrap(m.x + offset);
+  const speed = dir * Math.round(base * speedMult(tramo));
   return {
     row,
     kind,
-    speed: dir * Math.round(base * speedMult(tramo)),
+    speed,
     sinking: false,
     movers,
+    reversible: false,
+    cruise: speed,
+    reverseIn: 0,
+    ramp: 0,
   };
 }
 export function pickLilies(count: number): number[] {
@@ -152,7 +172,54 @@ export function generateStretch(tramo: number): Stretch {
       m.phase = (i * SINK_CYCLE) / n + offset;
     });
   }
+  pickReversible(lanes, tramo);
   return { lanes, lilies: pickLilies(lilyCount(tramo)) };
+}
+// ── Carriles reversibles ──
+const randReverse = () =>
+  REVERSE_MIN + Math.random() * (REVERSE_MAX - REVERSE_MIN);
+export const reversibleCount = (tramo: number) =>
+  Math.max(0, Math.min(MAX_REVERSIBLE, tramo - (REVERSE_FROM_TRAMO - 1)));
+// Marks min(3, tramo − 2) lanes at random, never two in contiguous rows.
+export function pickReversible(lanes: Lane[], tramo: number) {
+  const count = reversibleCount(tramo);
+  if (count <= 0) return;
+  // With 9 lanes in rows 1–4 and 6–10, 3 non-contiguous lanes always fit.
+  for (;;) {
+    const pool = [...lanes].sort(() => Math.random() - 0.5);
+    const chosen: Lane[] = [];
+    for (const lane of pool) {
+      if (chosen.length === count) break;
+      if (chosen.every((c) => Math.abs(c.row - lane.row) > 1))
+        chosen.push(lane);
+    }
+    if (chosen.length < count) continue;
+    for (const lane of chosen) {
+      lane.reversible = true;
+      lane.reverseIn = randReverse();
+    }
+    return;
+  }
+}
+// Countdown, then a linear ramp from cruise to −cruise in REVERSE_RAMP.
+export function updateReverse(lane: Lane, dt: number) {
+  if (!lane.reversible) return;
+  if (lane.ramp <= 0) {
+    lane.reverseIn -= dt;
+    if (lane.reverseIn > 0) return;
+    // The leftover of this frame already runs on the ramp.
+    lane.ramp = REVERSE_RAMP + lane.reverseIn;
+    lane.reverseIn = 0;
+  } else lane.ramp -= dt;
+  if (lane.ramp <= 0) {
+    lane.cruise = -lane.cruise;
+    lane.speed = lane.cruise;
+    lane.ramp = 0;
+    lane.reverseIn = randReverse();
+    return;
+  }
+  const progress = 1 - lane.ramp / REVERSE_RAMP;
+  lane.speed = lane.cruise * (1 - 2 * progress);
 }
 // ── Movimiento y colisiones ──
 export function moveLane(lane: Lane, dt: number) {
@@ -316,6 +383,62 @@ export function drawLane(
         pal,
       );
   }
+}
+// Reversible lane: a faint ⇄ at both ends, and for the second before a
+// reversal, two blinking chevrons per end pointing to the new direction.
+// Drawn under the movers and without glow.
+export function drawReverse(
+  ctx: CanvasRenderingContext2D,
+  lane: Lane,
+  t: number,
+  pal: RanariaPalette,
+) {
+  if (!lane.reversible) return;
+  const cy = lane.row * CELL + CELL / 2;
+  const half = REVERSE_MARK_W / 2;
+  const ends = [REVERSE_MARK_MARGIN + half, W - REVERSE_MARK_MARGIN - half];
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  // ⇄: upper arrow to the right, lower arrow to the left, 16 × 10 px.
+  ctx.strokeStyle = pal.reverseMark;
+  ctx.beginPath();
+  for (const cx of ends) {
+    const top = cy - REVERSE_MARK_H / 2 + 1;
+    const bottom = cy + REVERSE_MARK_H / 2 - 1;
+    ctx.moveTo(cx - half, top);
+    ctx.lineTo(cx + half, top);
+    ctx.moveTo(cx + half - 4, top - 3);
+    ctx.lineTo(cx + half, top);
+    ctx.lineTo(cx + half - 4, top + 3);
+    ctx.moveTo(cx + half, bottom);
+    ctx.lineTo(cx - half, bottom);
+    ctx.moveTo(cx - half + 4, bottom - 3);
+    ctx.lineTo(cx - half, bottom);
+    ctx.lineTo(cx - half + 4, bottom + 3);
+  }
+  ctx.stroke();
+  const warning = lane.ramp <= 0 && lane.reverseIn <= REVERSE_WARN;
+  if (!warning || Math.floor(t / REVERSE_BLINK) % 2 !== 0) {
+    ctx.lineCap = "butt";
+    ctx.lineJoin = "miter";
+    return;
+  }
+  // Chevrons point where the lane is about to go (the sign of −cruise).
+  const dir = lane.cruise > 0 ? -1 : 1;
+  ctx.strokeStyle = pal.reverseWarn;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  for (const cx of ends)
+    for (const off of [-5, 5]) {
+      const tip = cx + off + dir * 4;
+      ctx.moveTo(tip - dir * 7, cy - 9);
+      ctx.lineTo(tip, cy);
+      ctx.lineTo(tip - dir * 7, cy + 9);
+    }
+  ctx.stroke();
+  ctx.lineCap = "butt";
+  ctx.lineJoin = "miter";
 }
 export function drawLilies(
   ctx: CanvasRenderingContext2D,

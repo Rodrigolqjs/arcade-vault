@@ -58,6 +58,17 @@ export const TIME_BONUS = 10; // por segundo entero restante
 export const DEATH_DELAY = 0.8; // s de respawn con vidas restantes
 export const GAMEOVER_DELAY = 1; // s
 export const DEATH_BLINK = 0.1; // s por medio parpadeo de la rana muerta
+// Carriles reversibles (SPEC ranaria/03)
+export const REVERSE_FROM_TRAMO = 3; // min(MAX_REVERSIBLE, tramo − (REVERSE_FROM_TRAMO − 1))
+export const MAX_REVERSIBLE = 3; // carriles por tramo
+export const REVERSE_MIN = 6; // s entre inversiones
+export const REVERSE_MAX = 9; // s entre inversiones
+export const REVERSE_WARN = 1; // s de aviso antes de la rampa
+export const REVERSE_RAMP = 0.6; // s de v a −v, lineal
+export const REVERSE_BLINK = 0.125; // s por medio parpadeo del aviso
+export const REVERSE_MARK_W = 16; // px, flecha doble permanente
+export const REVERSE_MARK_H = 10; // px
+export const REVERSE_MARK_MARGIN = 12; // px desde cada borde del canvas
 // Copia los tokens de app/globals.css; el canvas no lee variables CSS.
 export const COLORS = {
   frog: "#00ff88", // --green, color de ranaria en el catálogo
@@ -78,6 +89,8 @@ export const COLORS = {
   road: "#0f0f18", // --bg-2
   laneLine: "rgba(230, 233, 255, 0.35)", // --ink al 35 %
   windscreen: "rgba(10, 10, 24, 0.55)", // parabrisas, marca la dirección
+  reverseWarn: "#f5ff00", // --yellow, chevrones del aviso
+  reverseMark: "rgba(74, 79, 112, 0.6)", // --ink-faint al 60 %, flecha doble permanente
 };
 // shadowBlur de las entidades con halo (el resto, 0).
 export const GLOW = { frog: 14, lily: 12 };

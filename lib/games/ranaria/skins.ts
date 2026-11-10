@@ -23,6 +23,8 @@ export interface RanariaPalette {
   road: string;
   laneLine: string; // dashes; the kerb is the same color at half alpha
   windscreen: string;
+  reverseWarn: string; // chevrons before a lane reverses
+  reverseMark: string; // permanent double arrow of a reversible lane
   glow: { frog: number; lily: number; vehicle: number };
   edges: "round" | "hard"; // hard: square corners, square lily and eyes
 }
@@ -55,6 +57,8 @@ const NEON: RanariaPalette = {
   road: "#000000",
   laneLine: "rgba(0, 229, 255, 0.3)",
   windscreen: "rgba(0, 0, 0, 0.6)",
+  reverseWarn: "#ffff00",
+  reverseMark: "rgba(120, 130, 200, 0.6)",
   glow: { frog: 20, lily: 16, vehicle: 8 },
   edges: "round",
 };
@@ -80,6 +84,8 @@ const RETRO: RanariaPalette = {
   road: "#0e0c16",
   laneLine: "rgba(240, 232, 208, 0.3)",
   windscreen: "rgba(14, 12, 22, 0.6)",
+  reverseWarn: "#f0e8d0",
+  reverseMark: "rgba(148, 132, 232, 0.5)",
   glow: { frog: 0, lily: 0, vehicle: 0 },
   edges: "hard",
 };

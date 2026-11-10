@@ -23,6 +23,7 @@ import {
   drawFrog,
   drawLane,
   drawLilies,
+  drawReverse,
   frogInCanvas,
   generateStretch,
   hitsVehicle,
@@ -31,6 +32,7 @@ import {
   logUnder,
   moveLane,
   startFrog,
+  updateReverse,
 } from "@/lib/games/ranaria/entities";
 import { type RanariaPalette, SKINS } from "@/lib/games/ranaria/skins";
 import { DEFAULT_SKIN, type SkinId } from "@/lib/games/skins";
@@ -186,7 +188,10 @@ export function createRanariaGame(
     }
     if (state !== "playing") return;
     t += dt;
-    for (const lane of lanes) moveLane(lane, dt);
+    for (const lane of lanes) {
+      updateReverse(lane, dt);
+      moveLane(lane, dt);
+    }
     frog.hopAnim = Math.max(0, frog.hopAnim - dt);
     // Respawn: the traffic keeps moving, the clock and the input wait.
     if (respawnTimer > 0) {
@@ -221,6 +226,7 @@ export function createRanariaGame(
   function draw() {
     drawBands(ctx, palette);
     drawLilies(ctx, lilies, palette);
+    for (const lane of lanes) drawReverse(ctx, lane, t, palette);
     for (const lane of lanes) drawLane(ctx, lane, t, palette);
     // Dead frog: blinks in the skin's dead color where it died.
     if (respawnTimer > 0 || state === "dying" || state === "gameover") {
