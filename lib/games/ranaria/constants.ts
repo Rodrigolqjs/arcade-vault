@@ -74,13 +74,13 @@ export const COLORS = {
   frog: "#00ff88", // --green, color de ranaria en el catálogo
   frogEyes: "#e6e9ff", // --ink
   lily: "#00ff88", // --green
-  car: "#ff006e", // --magenta
+  car: "#ff5ca0", // --magenta aclarado: pasa el contraste en las esquinas del CRT
   van: "#00f5ff", // --cyan
   truck: "#f5ff00", // --yellow
-  log: "rgba(0, 245, 255, 0.35)", // --cyan al 35 %
+  log: "rgba(0, 245, 255, 0.25)", // --cyan al 25 %: la rana se lee encima
   logEdge: "#00f5ff", // --cyan
-  logWarn: "#ff006e", // --magenta
-  logWarnFill: "rgba(255, 0, 110, 0.25)", // --magenta al 25 %, relleno del aviso
+  logWarn: "#ff8ab8", // magenta claro: el aviso se lee sobre el río
+  logWarnFill: "rgba(255, 138, 184, 0.25)", // logWarn al 25 %, relleno del aviso
   logUnder: "rgba(74, 79, 112, 0.4)", // --ink-faint al 40 %
   dead: "#ff006e", // --magenta
   goal: "#001f2a",

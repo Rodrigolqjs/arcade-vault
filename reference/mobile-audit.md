@@ -11,7 +11,7 @@
 | `caida`         |               |                       |                 |                   |                   |            | sin revisar |             |
 | `serpentina`    |               |                       |                 |                   |                   |            | sin revisar |             |
 | `bloque-buster` |               |                       |                 |                   |                   |            | sin revisar |             |
-| `ranaria`       | ✅ cumple     | ✅ cruz ▲▼◀▶, sin a/b | ✅ cumple       | ✅ ✅ ✅          | ✅ ✅             | ✅ igual   | implementada | 2026-11-10  |
+| `ranaria`       | ✅ cumple     | ✅ cruz ▲▼◀▶, sin a/b | ✅ cumple       | ✅ ✅ ✅          | ✅ ✅             | ✅ igual   | ok ✅ | 2026-11-10  |
 
 ## Páginas
 
