@@ -320,7 +320,9 @@
   .av-nav .hamburger {
     display: none;
   }
-  @media (max-width: 840px) {
+  /* 960px, not 840px: at 844px (phone in landscape) the desktop nav overflowed
+     to 919px and the browser zoomed the page out (SPEC 11). */
+  @media (max-width: 960px) {
     .av-nav {
       padding: 12px 16px;
     }
@@ -1209,6 +1211,10 @@
     font-size: clamp(10px, 1.4vw, 12px);
     color: var(--ink-dim);
   }
+  /* Touch mode hides the key cheat sheet; display:flex above would beat [hidden]. */
+  .game-start .keys[hidden] {
+    display: none;
+  }
   .game-start kbd {
     display: inline-block;
     min-width: 1.9em;
@@ -1404,6 +1410,264 @@
   @media (prefers-reduced-motion: reduce) {
     .skin-key {
       transition: none;
+    }
+  }
+  /* ===== touch pad: cabinet control deck under the CRT (touch mode only) ===== */
+  .touch-pad {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 14px;
+    padding: 16px 20px;
+    border-radius: 6px 6px 20px 20px;
+    background: #050507;
+    box-shadow:
+      0 0 0 6px #1b1b22,
+      0 0 0 7px #2a2a35;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .touch-key {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    color: var(--ink-dim);
+    cursor: pointer;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      transform 70ms,
+      box-shadow 70ms,
+      color 70ms;
+  }
+  .touch-key:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 3px;
+  }
+  .touch-pad:not([data-active]) .touch-key {
+    opacity: 0.55;
+  }
+  /* D-pad: one cross-shaped piece; missing arms simply aren't drawn. */
+  .touch-dpad {
+    display: grid;
+    grid-template-columns: 60px 60px 60px;
+    grid-template-rows: auto 60px auto;
+    grid-template-areas:
+      ". up ."
+      "left hub right"
+      ". down .";
+  }
+  .touch-dpad:not(.is-cross) {
+    grid-template-columns: 64px 64px;
+    grid-template-rows: 60px;
+    grid-template-areas: "left right";
+    gap: 8px;
+  }
+  .touch-key-dpad {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(#22222b, #17171e);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 3px 0 #000;
+  }
+  .touch-key-up {
+    grid-area: up;
+    border-radius: 8px 8px 0 0;
+  }
+  .touch-key-down {
+    grid-area: down;
+    border-radius: 0 0 8px 8px;
+  }
+  .touch-key-left {
+    grid-area: left;
+    border-radius: 8px 0 0 8px;
+  }
+  .touch-key-right {
+    grid-area: right;
+    border-radius: 0 8px 8px 0;
+  }
+  .touch-dpad:not(.is-cross) .touch-key-dpad {
+    border-radius: 8px;
+  }
+  .touch-dpad-hub {
+    grid-area: hub;
+    background: #17171e;
+    box-shadow: 0 3px 0 #000;
+  }
+  .touch-dpad-hub::after {
+    content: "";
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin: 21px auto;
+    border-radius: 50%;
+    background: #0c0c11;
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.9);
+  }
+  .touch-key-glyph {
+    font-family: system-ui, sans-serif;
+    font-size: 20px;
+    line-height: 1;
+  }
+  .touch-key-dpad[data-pressed] {
+    transform: translateY(2px);
+    color: var(--cyan);
+    background: linear-gradient(#17171e, #1d1d26);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85);
+  }
+  .touch-key-dpad[data-pressed] .touch-key-glyph {
+    text-shadow: 0 0 8px var(--cyan);
+  }
+  /* Action buttons: round arcade caps whose ring lights up when pressed. */
+  .touch-actions {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .touch-key-action {
+    flex-direction: column;
+    gap: 8px;
+    background: none;
+    --cap: var(--magenta);
+  }
+  .touch-key-b {
+    --cap: var(--yellow);
+    margin-top: 26px;
+  }
+  .touch-key-cap {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 38%,
+      color-mix(in srgb, var(--cap) 55%, #fff 10%),
+      color-mix(in srgb, var(--cap) 45%, #000) 70%
+    );
+    box-shadow:
+      0 0 0 4px #121218,
+      0 0 0 5px color-mix(in srgb, var(--cap) 35%, transparent),
+      0 5px 0 4px #000;
+    transition:
+      transform 70ms,
+      box-shadow 70ms,
+      filter 70ms;
+  }
+  .touch-key-name {
+    font-family: var(--pixel);
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+  .touch-key-action[data-pressed] .touch-key-cap {
+    transform: translateY(3px);
+    filter: brightness(1.35);
+    box-shadow:
+      0 0 0 4px #121218,
+      0 0 0 5px var(--cap),
+      0 0 22px 4px color-mix(in srgb, var(--cap) 55%, transparent),
+      0 2px 0 4px #000;
+  }
+  .touch-key-action[data-pressed] .touch-key-name {
+    color: var(--cap);
+  }
+  /* Narrow phones: a full cross plus A and B must fit in ~358px. */
+  @media (max-width: 420px) {
+    .touch-pad {
+      gap: 12px;
+      padding: 14px 16px;
+    }
+    .touch-dpad {
+      grid-template-columns: 56px 56px 56px;
+      grid-template-rows: auto 56px auto;
+    }
+    .touch-dpad:not(.is-cross) {
+      grid-template-columns: 60px 60px;
+      grid-template-rows: 56px;
+    }
+    .touch-key-dpad {
+      height: 56px;
+    }
+    .touch-dpad-hub::after {
+      margin: 19px auto;
+    }
+    .touch-actions {
+      gap: 12px;
+    }
+    .touch-key-cap {
+      width: 60px;
+      height: 60px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .touch-key,
+    .touch-key-cap {
+      transition: none;
+    }
+  }
+  /* Touch devices: no scroll, zoom, selection or callout while playing on
+     the CRT, and HUD buttons big enough for a finger. */
+  @media (pointer: coarse) {
+    .crt {
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hud-actions .btn {
+      min-height: 44px;
+    }
+  }
+  /* Touch, landscape: d-pad left of the CRT, action buttons right of it. The
+     CRT width is capped by the viewport height so the whole screen fits under
+     the sticky nav: 66px = nav, 12px = breathing room, 86px = the CRT's
+     vertical chrome (padding + status strip), 48px = its side padding. */
+  @media (orientation: landscape) and (pointer: coarse) {
+    .av-player:has(.touch-pad) {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas:
+        "hud hud hud"
+        "dpad crt actions"
+        "skins skins skins";
+      align-items: center;
+      column-gap: 16px;
+    }
+    .av-player:has(.touch-pad) .player-hud {
+      grid-area: hud;
+    }
+    .av-player:has(.touch-pad) .crt {
+      grid-area: crt;
+      justify-self: center;
+      width: min(100%, calc((100svh - 12px - 66px - 86px) * 4 / 3 + 48px));
+      /* scrollIntoView centers it in the space left under the nav. */
+      scroll-margin-top: 66px;
+    }
+    .av-player:has(.touch-pad) .skin-panel {
+      grid-area: skins;
+    }
+    .av-player .touch-pad {
+      display: contents;
+    }
+    .av-player .touch-dpad {
+      grid-area: dpad;
+    }
+    .av-player .touch-actions {
+      grid-area: actions;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 18px;
+    }
+    .av-player .touch-key-b {
+      margin-top: 0;
     }
   }
   /* fake in-screen game */

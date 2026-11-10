@@ -50,6 +50,8 @@ export interface TetrisGame {
   end: () => number;
   destroy: () => void;
   setSkin: (id: SkinId) => void; // swaps the palette; repaints if the loop is stopped
+  press: (code: string) => void; // touch controls: same path as keydown for that KeyboardEvent.code
+  release: (code: string) => void; // touch controls: same path as keyup
 }
 // dying: board frozen and dimmed for GAMEOVER_DELAY, no input.
 type EngineState = "ready" | "playing" | "dying" | "gameover";
@@ -160,10 +162,11 @@ export function createTetrisGame(
   // ── Input ──
   // Actions run on keydown (with the system's autorepeat), only while playing.
   // P and Escape belong to the player component.
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (e.code === "Space") spaceHeld = true;
+  // Keyboard and touch controls share these, keyed by KeyboardEvent.code.
+  const keyDown = (code: string) => {
+    if (code === "Space") spaceHeld = true;
     if (state !== "playing" || raf === null) return;
-    switch (e.code) {
+    switch (code) {
       case "ArrowLeft":
         move(-1);
         break;
@@ -182,11 +185,13 @@ export function createTetrisGame(
         break;
     }
   };
-  const onKeyUp = (e: KeyboardEvent) => {
-    if (e.code !== "Space") return;
+  const keyUp = (code: string) => {
+    if (code !== "Space") return;
     spaceHeld = false;
     spaceLocked = false;
   };
+  const onKeyDown = (e: KeyboardEvent) => keyDown(e.code);
+  const onKeyUp = (e: KeyboardEvent) => keyUp(e.code);
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("keyup", onKeyUp);
   // ── Update ──
@@ -369,6 +374,8 @@ export function createTetrisGame(
       state = "gameover";
       return score;
     },
+    press: keyDown,
+    release: keyUp,
     setSkin(id) {
       palette = SKINS[id];
       // Frozen frame (ready, paused, game over): show the new skin right away.

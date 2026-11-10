@@ -45,6 +45,8 @@ export interface SnakeGame {
   end: () => number;
   destroy: () => void;
   setSkin: (id: SkinId) => void; // swaps the palette; repaints if the loop is stopped
+  press: (code: string) => void; // touch controls: same path as keydown for that KeyboardEvent.code
+  release: (code: string) => void; // touch controls: same path as keyup
 }
 // dying: snake frozen and blinking for GAMEOVER_DELAY, no input.
 type EngineState = "ready" | "playing" | "dying" | "gameover";
@@ -99,14 +101,16 @@ export function createSnakeGame(
   // Turns are queued (max 2) and validated against the last queued turn, so two
   // quick presses inside one tick can't reverse the snake. P, Escape and Space
   // belong to the player component.
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (state !== "playing" || raf === null || e.repeat) return;
-    const next = KEY_DIRS[e.code];
+  // Keyboard and touch controls share this, keyed by KeyboardEvent.code.
+  const keyDown = (code: string, repeat: boolean) => {
+    if (state !== "playing" || raf === null || repeat) return;
+    const next = KEY_DIRS[code];
     if (!next || queue.length >= MAX_QUEUED_TURNS) return;
     const last = queue[queue.length - 1] ?? dir;
     if (next === last || isOpposite(next, last)) return;
     queue.push(next);
   };
+  const onKeyDown = (e: KeyboardEvent) => keyDown(e.code, e.repeat);
   window.addEventListener("keydown", onKeyDown);
   // ── Update ──
   // Crash or full board: freeze the snake and blink it for GAMEOVER_DELAY.
@@ -295,6 +299,8 @@ export function createSnakeGame(
       state = "gameover";
       return score;
     },
+    press: (code) => keyDown(code, false),
+    release: () => {}, // turns have no keyup logic
     setSkin(id) {
       palette = SKINS[id];
       // Frozen frame (ready, paused, game over): show the new skin right away.

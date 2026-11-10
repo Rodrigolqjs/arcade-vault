@@ -2,6 +2,10 @@
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import GameOverModal from "@/components/GameOverModal";
 import PlayerHud from "@/components/PlayerHud";
+import TouchControls, {
+  type PadButton,
+} from "@/components/games/TouchControls";
+import { useTouchMode } from "@/components/games/useTouchMode";
 import SkinSelector, {
   type SkinPreview,
 } from "@/components/games/SkinSelector";
@@ -14,6 +18,21 @@ import {
 import { SKINS } from "@/lib/games/arkanoid/skins";
 import { SKIN_IDS, type SkinId, loadSkin, saveSkin } from "@/lib/games/skins";
 type Phase = "ready" | "playing" | "paused" | "over";
+// Touch pad: hold ◀ or ▶ to move the paddle, like the keys.
+const PAD: PadButton[] = [
+  {
+    slot: "left",
+    code: "ArrowLeft",
+    label: "◀",
+    ariaLabel: "Mover la pala a la izquierda",
+  },
+  {
+    slot: "right",
+    code: "ArrowRight",
+    label: "▶",
+    ariaLabel: "Mover la pala a la derecha",
+  },
+];
 // Mini screen per skin: paddle, ball and a red-row block on the skin background.
 const SKIN_PREVIEWS = Object.fromEntries(
   SKIN_IDS.map((id) => {
@@ -32,6 +51,8 @@ const START_HUD: HudState = { score: 0, lives: 3, level: 1 };
 const GAME_KEYS = new Set(["ArrowLeft", "ArrowRight", "Space"]);
 export default function ArkanoidPlayer({ game }: { game: Game }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const crtRef = useRef<HTMLDivElement>(null);
+  const touch = useTouchMode();
   const engineRef = useRef<ArkanoidGame | null>(null);
   const [phase, setPhase] = useState<Phase>("ready");
   const [hud, setHud] = useState(START_HUD);
@@ -48,6 +69,8 @@ export default function ArkanoidPlayer({ game }: { game: Game }) {
   const start = () => {
     engineRef.current?.start();
     setPhase("playing");
+    // On a phone the CRT may sit below the HUD: bring it into view to play.
+    if (touch) crtRef.current?.scrollIntoView({ block: "center" });
   };
   const pause = () => {
     if (phase !== "playing") return;
@@ -116,7 +139,7 @@ export default function ArkanoidPlayer({ game }: { game: Game }) {
         onEnd={end}
         exitHref={`/juegos/${game.id}`}
       />
-      <div className="crt">
+      <div className="crt" ref={crtRef}>
         <div className="crt-screen">
           <canvas ref={canvasRef} className="game-canvas" />
           {phase === "ready" && (
@@ -124,8 +147,10 @@ export default function ArkanoidPlayer({ game }: { game: Game }) {
               <div className={`pixel neon-${game.color} title`}>
                 {game.title}
               </div>
-              <div className="pixel prompt">PULSA ESPACIO_</div>
-              <div className="mono keys">
+              <div className="pixel prompt">
+                {touch ? "TOCA PARA EMPEZAR_" : "PULSA ESPACIO_"}
+              </div>
+              <div className="mono keys" hidden={touch}>
                 <span>
                   <kbd>←</kbd>
                   <kbd>→</kbd>mover
@@ -141,7 +166,9 @@ export default function ArkanoidPlayer({ game }: { game: Game }) {
               <div>
                 <div className="pixel neon-yellow text-[22px]">EN PAUSA</div>
                 <div className="mono mt-2.5 text-[11px] tracking-[0.16em] text-ink-dim">
-                  PULSA REANUDAR PARA CONTINUAR
+                  {touch
+                    ? "TOCA REANUDAR PARA CONTINUAR"
+                    : "PULSA REANUDAR PARA CONTINUAR"}
                 </div>
               </div>
             </div>
@@ -153,6 +180,14 @@ export default function ArkanoidPlayer({ game }: { game: Game }) {
           <span>CARGA · 1MB</span>
         </div>
       </div>
+      {touch && (
+        <TouchControls
+          buttons={PAD}
+          active={phase === "playing"}
+          onPress={(code) => engineRef.current?.press(code)}
+          onRelease={(code) => engineRef.current?.release(code)}
+        />
+      )}
       <SkinSelector
         value={skin}
         onChange={changeSkin}

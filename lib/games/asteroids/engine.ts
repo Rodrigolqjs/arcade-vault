@@ -37,6 +37,8 @@ export interface AsteroidsGame {
   end: () => number;
   destroy: () => void;
   setSkin: (id: SkinId) => void; // swaps the palette; repaints if the loop is stopped
+  press: (code: string) => void; // touch controls: same path as keydown for that KeyboardEvent.code
+  release: (code: string) => void; // touch controls: same path as keyup
 }
 type EngineState = "ready" | "playing" | "dead" | "gameover";
 export function createAsteroidsGame(
@@ -53,13 +55,16 @@ export function createAsteroidsGame(
   // ── Input ──
   const keys: Keys = {};
   const justPressed: Keys = {};
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (!keys[e.code]) justPressed[e.code] = true;
-    keys[e.code] = true;
+  // Keyboard and touch controls share these, keyed by KeyboardEvent.code.
+  const keyDown = (code: string) => {
+    if (!keys[code]) justPressed[code] = true;
+    keys[code] = true;
   };
-  const onKeyUp = (e: KeyboardEvent) => {
-    keys[e.code] = false;
+  const keyUp = (code: string) => {
+    keys[code] = false;
   };
+  const onKeyDown = (e: KeyboardEvent) => keyDown(e.code);
+  const onKeyUp = (e: KeyboardEvent) => keyUp(e.code);
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("keyup", onKeyUp);
   const pressed = (code: string) => {
@@ -284,6 +289,8 @@ export function createAsteroidsGame(
       finished = true;
       return score;
     },
+    press: keyDown,
+    release: keyUp,
     setSkin(id) {
       palette = SKINS[id];
       // Frozen frame (ready, paused, game over): show the new skin right away.
