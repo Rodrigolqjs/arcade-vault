@@ -1,6 +1,6 @@
 # SPEC ranaria/03 — Carriles reversibles en RANARIA
 
-> **Estado:** Borrador
+> **Estado:** APROVADA
 > **Depende de:** SPEC ranaria/02
 > **Fecha:** 2026-11-06
 > **Objetivo:** Añadir a RANARIA, desde el tramo 3, carriles que invierten su sentido cada 6–9 s tras un aviso de 1 s, para que los tramos altos exijan leer el ritmo de los carriles y no solo su velocidad.

@@ -136,7 +136,7 @@ En ambos casos, el contenido sigue `spec-template.md`: cabecera, por qué existe
    - Ruta del archivo creado.
    - Recordatorio: la spec está en `Borrador`; cámbiala a `Aprobado` cuando la hayas releído.
    - Si acabas de crear `specs/.spec-config.yml`, que existe y que `AutoCreateBranch` es `true` por defecto.
-   - Siguiente paso: tras revisarla y aprobarla, `/spec-impl NN-<id>-jugable`, que trabajará en la rama `spec-NN-<id>-jugable`.
+   - Siguiente paso: tras revisarla y aprobarla, `/spec-impl-game NN-<id>-jugable` (o `/spec-impl`, sin los agentes), que trabajará en la rama `spec-NN-<id>-jugable` y al terminar lanzará `skin-designer` y después `mobile-porter` para el juego.
    - **Para aquí.** No propongas implementar la spec ni hagas nada más.
 
 ## Reglas duras

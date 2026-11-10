@@ -1,6 +1,6 @@
 # SPEC ranaria/02 — Cruce de carriles sin fin jugable en RANARIA
 
-> **Estado:** Borrador
+> **Estado:** APROVADA
 > **Depende de:** SPEC 05, SPEC 06, SPEC 07, SPEC ranaria/01
 > **Fecha:** 2026-11-06
 > **Objetivo:** Crear un juego original de cruce de carriles por tramos sin fin (carretera, río con troncos que se hunden y nenúfares como meta, con reloj de 30 s por tramo) y montarlo en `/juegos/ranaria/jugar` con el HUD, la pausa, el modal de fin de juego y el leaderboard real de la plataforma.

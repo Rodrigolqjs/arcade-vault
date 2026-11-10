@@ -92,7 +92,8 @@ This project uses spec-driven development: every feature is designed and impleme
 
 - `/spec <description>` writes a spec to `specs/NN-slug.md` in the `Draft` state. The user changes the state to approved by hand.
 - `/spec-impl NN-slug` only runs on approved specs. It works on a `spec-NN-slug` branch and implements the spec's plan one step at a time. `specs/.spec-config.yml` (`AutoCreateBranch: true`) creates that branch automatically. When it is done, the spec's state is set to `implementada` and the branch is merged into `main` through a PR.
-- To make a game playable (port from `reference/resources/started-games/` or a new original engine) run the project skill `/add-game <folder or id>` (`.claude/skills/add-game/`): it writes the Draft spec with the engine, player, registry and `accepts_scores` steps, which `/spec-impl` then implements.
+- To make a game playable (port from `reference/resources/started-games/` or a new original engine) run the project skill `/add-game <folder or id>` (`.claude/skills/add-game/`): it writes the Draft spec with the engine, player, registry and `accepts_scores` steps, which `/spec-impl-game` (or plain `/spec-impl`) then implements.
+- `/spec-impl-game NN-<id>-jugable` (project, `.claude/skills/spec-impl-game/`) is `/spec-impl` for game specs: it loads the original `~/.claude/skills/spec-impl/SKILL.md` at invocation and follows its phases unchanged, stops if the spec makes no game playable, and after the last step runs the `skin-designer` agent for that game and, once it finishes, the `mobile-porter` agent (sequentially, never in parallel). It never commits.
 - If a spec exists for a feature, implement what it says. Proposed changes belong in the spec, not in code that drifts from it.
 
 ## Skills
@@ -101,6 +102,7 @@ Usa siempre /frontend-design para diseñar la interfaz de usuario.
 
 - `/spec` and `/spec-impl` (global, `~/.claude/skills/`): design and implement features.
 - `/add-game <folder or id>` (project, `.claude/skills/add-game/`, with `spec-template.md` and `checklist.md`): writes the spec that makes a game playable. Only the user can invoke it (`disable-model-invocation`).
+- `/spec-impl-game <NN-spec>` (project, `.claude/skills/spec-impl-game/`): `/spec-impl` + `skin-designer` + `mobile-porter` for game specs. Only the user can invoke it.
 - `/frontend-design`: required for any UI work.
 
 ## Agents

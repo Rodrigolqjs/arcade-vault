@@ -1,6 +1,6 @@
 # SPEC ranaria/01 — Ajuste del catálogo de RANARIA: texto y portada
 
-> **Estado:** Borrador
+> **Estado:** APROVADA
 > **Depende de:** SPEC 06, SPEC 07
 > **Fecha:** 2026-11-06
 > **Objetivo:** Ajustar la entrada `ranaria`, que ya existe en `public.games`, para que su texto describa el diseño original de la game jam (tramos sin fin, reloj de 30 s y troncos que se hunden) y rediseñar su portada `cover-rana` con carriles, río, rana y nenúfares, sin insertar ninguna fila nueva.
