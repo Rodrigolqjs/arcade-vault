@@ -1,0 +1,4 @@
+- [Solo auditar](feedback_audit_only.md) — auditar sin arreglar; arreglos por /spec; Supabase solo lectura; sin commits
+- [Riesgos aceptados](project_accepted_risks.md) — SEC-005..008 (CSP, contacto, leaked pwd, rate limit IP) con su spec y cuándo revisar
+- [Hallazgos](project_sec_ids.md) — SEC-NNN con estado y fechas; siguiente id libre al principio (SEC-009)
+- Última auditoría: App 2026-11-11 (rama spec-16); BD todavía sin auditar
