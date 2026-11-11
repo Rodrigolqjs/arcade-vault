@@ -17,8 +17,22 @@ export type AuthError =
 export type AuthResult =
   | { ok: true }
   | { ok: false; error: AuthError; fields?: Partial<Record<string, string>> };
-type SupabaseAuthError = { message: string; status?: number; code?: string };
+type SupabaseAuthError = {
+  message: string;
+  status?: number;
+  code?: string;
+  reasons?: string[];
+};
 const fail = (error: AuthError): AuthResult => ({ ok: false, error });
+// weak_password → error on the password field; "pwned" means the leaked
+// password protection rejected it (SPEC 16).
+function weakPassword(err: SupabaseAuthError): AuthResult | null {
+  if (err.code !== "weak_password") return null;
+  const password = err.reasons?.includes("pwned")
+    ? "ESA CONTRASEÑA APARECE EN FILTRACIONES · ELIGE OTRA"
+    : "CONTRASEÑA DEMASIADO DÉBIL";
+  return { ok: false, error: "validation", fields: { password } };
+}
 // Rate limits → "rate"; anything unexpected is logged and becomes "unknown".
 function mapAuthError(where: string, err: SupabaseAuthError): AuthResult {
   if (
@@ -124,7 +138,7 @@ export async function signUp(
       emailRedirectTo: `${site}/auth/confirm`,
     },
   });
-  if (error) return mapAuthError("signUp", error);
+  if (error) return weakPassword(error) ?? mapAuthError("signUp", error);
   return { ok: true };
 }
 const PROVIDERS = ["google", "github"] as const;
@@ -206,14 +220,7 @@ export async function updatePassword(
         fields: { password: "DEBE SER DISTINTA DE LA ACTUAL" },
       };
     }
-    if (error.code === "weak_password") {
-      return {
-        ok: false,
-        error: "validation",
-        fields: { password: "CONTRASEÑA DEMASIADO DÉBIL" },
-      };
-    }
-    return mapAuthError("updatePassword", error);
+    return weakPassword(error) ?? mapAuthError("updatePassword", error);
   }
   redirect(DEFAULT_NEXT);
 }
