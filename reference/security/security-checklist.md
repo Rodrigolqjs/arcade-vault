@@ -6,7 +6,7 @@ Implementado en `specs/16-seguridad-basica.md`.
   - [x] Minimum password length — mínimo 8 caracteres
   - [ ] Leaked password protection — (el warning 4) · pendiente: el plan actual de Supabase no lo permite. El mensaje en la UI ya está listo.
   - [x] Max signup rate — limitar signups por IP (anti-bot) · 10 sign ups y sign ins cada 5 min por IP
-  - [x] Headers de seguridad en Next.js · `next.config.ts` (más `Permissions-Policy` y `Strict-Transport-Security`)
+  - [x] Headers de seguridad en Next.js · `next.config.ts` (más `Permissions-Policy` y `Strict-Transport-Security`) · verificado con `curl -sI` el 2026-11-11 en `/`, `/login`, `/api/health`, `/juegos/rocas/jugar` y `/auth/confirm`. Siguen pendientes la CSP (SEC-005) y `X-Powered-By` (SEC-003), ver `security-audit.md`.
 
   Ej:
 
