@@ -1,6 +1,6 @@
 # SPEC 16 — Seguridad básica: cabeceras, Auth endurecido y advisors de Supabase a cero
 
-> **Estado:** Aprobada
+> **Estado:** implementada
 > **Depende de:** SPEC 06, SPEC 07, SPEC 15
 > **Fecha:** 2026-11-10
 > **Objetivo:** Cerrar el checklist de `reference/security/security-checklist.md` con cabeceras de seguridad en Next.js, protección contra contraseñas filtradas, límite de registros por IP y una migración que deja sin avisos el panel de seguridad de Supabase.
@@ -144,3 +144,5 @@ En el código, la forma del error de Supabase que se lee en `signUp` y `updatePa
 - MFA, SMTP propio y URL de producción.
 
 Cada una, si llega, va en su propia spec.
+
+> **Nota de verificación (2026-11-11):** la spec se marca como implementada con cinco criterios sin marcar. Cuatro dependen de "Prevent use of leaked passwords", que el plan actual no permite activar (ver Riesgos): el aviso `auth_leaked_password_protection` en `get_advisors` (security), la casilla del dashboard y los dos mensajes de `password123` en registro y en `/login/nueva-clave`. El código ya traduce `weak_password` con `pwned`, así que activarla no exige cambios. El quinto es el inicio de sesión con GitHub o Google, pendiente de una prueba manual. La primera auditoría de la app (`reference/security/security-audit.md`) dejó abiertos SEC-001 a SEC-004 para una spec posterior.

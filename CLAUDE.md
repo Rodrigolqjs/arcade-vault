@@ -106,7 +106,7 @@ The full list is in `node_modules/next/dist/docs/01-app/02-guides/upgrading/vers
 
 ## Workflow: spec-driven development
 
-This project uses spec-driven development: every feature is designed and implemented with Fernando Herrera's `/spec` and `/spec-impl` skills (https://github.com/Klerith/fernando-skills), installed in `~/.claude/skills/`. Don't start a feature without a spec. Specs 01–15 are all implemented (15 with email-flow acceptance criteria still pending a manual test, see its note). Spec 16 (basic security) is being implemented on `spec-16-seguridad-basica`, so the next new one is `17-…`.
+This project uses spec-driven development: every feature is designed and implemented with Fernando Herrera's `/spec` and `/spec-impl` skills (https://github.com/Klerith/fernando-skills), installed in `~/.claude/skills/`. Don't start a feature without a spec. Specs 01–16 are all implemented (15 with email-flow acceptance criteria still pending a manual test, 16 with the leaked-password criteria blocked by the plan and the OAuth check pending; see their notes). The next new one is `17-…`; the open findings SEC-001 to SEC-004 in `reference/security/security-audit.md` are its natural candidate.
 
 - `/spec <description>` writes a spec to `specs/NN-slug.md` in the `Draft` state. The user changes the state to approved by hand.
 - `/spec-impl NN-slug` only runs on approved specs. It works on a `spec-NN-slug` branch and implements the spec's plan one step at a time. `specs/.spec-config.yml` (`AutoCreateBranch: true`) creates that branch automatically. When it is done, the spec's state is set to `implementada` and the branch is merged into `main` through a PR.
